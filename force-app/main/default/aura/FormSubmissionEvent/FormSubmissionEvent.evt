@@ -1,0 +1,7 @@
+<aura:event type="COMPONENT" description="FormSubmissionEvent">
+	<aura:attribute name="case" type="Object" />
+	<aura:attribute name="payees" type="Object[]" />
+	<aura:attribute name="vehicles" type="Object[]" />
+	<aura:attribute name="vins" type="Object[]" />
+	<aura:attribute name="vinEntries" type="String[]" />
+</aura:event>

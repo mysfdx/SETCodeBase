@@ -1,0 +1,11 @@
+<aura:component implements="lightning:availableForFlowScreens">
+    <aura:attribute name="myVal" type="String"  />
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <lightning:inputRichText 
+            value="{!v.myVal}" 
+            disabledCategories= "FORMAT_FONT,FORMAT_TEXT,FORMAT_BODY,ALIGN_TEXT,REMOVE_FORMATTING"
+            placeholder="Copy and Paste Edit Screenshot Here"
+            labelVisible="true"
+            label="Edits - Please Include Screenshot in this field"
+            required="true"/>
+</aura:component>

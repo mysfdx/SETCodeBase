@@ -1,0 +1,15 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global">
+    <aura:attribute name="booleanFeedback" type="String"  access="global"/>
+	<aura:attribute name="encodedFeedback" type="String"  access="global"/>
+    <aura:attribute name="decodedFeedback" type="String"  access="global"/>
+     <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+     <!-- Attribute to store the validation logic in. -->
+    <aura:attribute name="validate" type="Aura.Action" 
+                    description="Custom validation function to run when the 
+                                 flow is navigated to the next screen. 
+                                 The function must evaluate the component and 
+                                 return values for isValid and errorMessage."/>
+     <lightning:input aura:Id="inpField" type="text" value="{!v.decodedFeedback}" 
+                      label="Reason for Contact" required="true" />
+</aura:component>

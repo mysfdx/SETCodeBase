@@ -1,0 +1,7 @@
+<!--
+ - Created by jeremysmith on 2019-03-23.
+ -->
+
+<design:component>
+    <design:attribute name="recordId" description="Case RecordId" />
+</design:component>

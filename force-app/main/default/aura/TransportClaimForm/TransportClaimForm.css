@@ -1,0 +1,27 @@
+.THIS {
+}
+
+.THIS.slds-box {
+    border-top: 15px solid #D51E10;
+    border-radius: 25px;
+    padding: 20px;
+}
+
+.THIS .Page-title {          
+     font-weight: bold;
+}
+
+.THIS .Page-content {          
+     font-size: 15px;
+     color: black;
+}
+
+.THIS .slds-form-element__label {
+   font-size: 15px;
+   font-weight: normal;
+     color: black;
+}
+.THIS .ContInfo {          
+    /*background-color: #D51E10;*/
+    font-weight: bold;
+}

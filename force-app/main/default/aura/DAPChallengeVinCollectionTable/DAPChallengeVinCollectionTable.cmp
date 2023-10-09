@@ -1,0 +1,81 @@
+<aura:component description="DAPChallengeVinCollectionTable">
+	<aura:attribute name="vinCollection" type="Object[]" required="true" />
+
+	<aura:registerEvent name="removeVinEvent" type="c:DAPChallengeVinRemoveEvent" />
+
+	<lightning:layout class="slds-size_1-of-1" multipleRows="false">
+		<div style="width: 15%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>VIN<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>Model Number<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 20%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Customer Name"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width:20%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Lease Co. Name"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Retail Date"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Process Date"/>
+			</lightning:layoutItem>
+		</div>
+		<div>
+			<lightning:layoutItem />
+		</div>
+	</lightning:layout>
+
+	<aura:iteration items="{!v.vinCollection}" var="vin" indexVar="i">
+		<lightning:layout class="slds-size_1-of-1" multipleRows="false">
+			<div style="width: 15%">
+				<lightning:layoutItem>
+					<lightning:input type="text" label="VIN" value="{!vin.Name}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 13%">
+				<lightning:layoutItem>
+					<lightning:input type="text" label="Model Number" value="{!vin.Model_Number__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 20%">
+				<lightning:layoutItem>
+					<lightning:input type="text" label="Customer Name" value="{!vin.Customer_Name__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 20%">
+				<lightning:layoutItem>
+					<lightning:input type="text" label="Lease Co. Name" value="{!vin.Lease_Co_Name__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 13%">
+				<lightning:layoutItem>
+					<lightning:input type="date" label="Retail Date" value="{!vin.Retail_Date__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 13%">
+				<lightning:layoutItem>
+					<lightning:input type="date" label="Process Date" value="{!vin.Process_Date__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5%">
+				<lightning:layoutItem>
+					<lightning:buttonIcon class="slds-button_destructive" variant="border-filled" iconName="utility:close" title="remove" alternativeText="Remove" value="{!i}" onclick="{!c.handleRemoveVehicle}" />
+				</lightning:layoutItem>
+			</div>
+		</lightning:layout>
+	</aura:iteration>
+</aura:component>

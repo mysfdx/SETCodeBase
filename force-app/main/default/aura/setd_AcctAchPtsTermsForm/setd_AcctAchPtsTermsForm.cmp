@@ -1,0 +1,125 @@
+<aura:component description="setd_AcctAchPtsTermsForm" controller="setd_AcctAchPtsTermsInsController">
+	<aura:attribute name="case" type="Case"/>
+	<aura:attribute name="account" type="Account"/>
+	<aura:attribute name="contact" type="Contact"/>
+	<aura:attribute name="authorizeVerbiage" type="String"/>
+	<aura:attribute name="authorizedUserAnswers" type="Object[]" default="[{'value':'YES', 'label':'Yes'}, {'value':'NO', 'label':'No'}]"/>
+	<aura:attribute name="isAuthorizedUser" type="String"/>
+	<aura:attribute name="pendingPrint" type="Boolean" default="true"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-page-header">
+		<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+			<lightning:layoutItem class="slds-text-heading_medium slds-text-align_center" size="12">
+				SET ACH PARTS STATEMENT
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-text-heading_medium slds-text-align_center" size="12">
+				TERMS AND INSTRUCTIONS FORM
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-size_1-of-1 slds-p-top_large" multipleRows="true">
+			<lightning:layoutItem class="slds-p-vertical_xx-small" size="12" flexibility="auto">
+				The program terms are:
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small slds-p-left_small" size="12" flexibility="auto">
+				1. The Dealer Parts Statement and TRAC billing statements will be available on SET Dealer Daily on the second workday of each month.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small slds-p-left_small" size="12" flexibility="auto">
+				2. The date for your ACH Parts Statement is the 15th of each month. If the 15th falls on a weekend or holiday, the payment date will be the next business day.
+				On that date, your bank account will be automatically debited or credited for the balance.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small" size="12" flexibility="auto">
+				SET must receive the attached Electronic Transfer Authorization Form completed and signed by an authorized representative.
+				The ACH Parts Program Electronic Authorization Form is available in the forms menu as PARTS ACH AUTHORIZATION.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small" size="12" flexibility="auto">
+				A voided check with your account number encoded must be included to verify the accuracy of routing and account numbers.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small" size="12" flexibility="auto">
+				Please submit the Electronic Transfer Authorization Form, along with a voided check.  Be sure to send a copy of pre-notification letter to your bank officer.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-vertical_xx-small" size="12" flexibility="auto">
+				If you have any questions regarding the ACH transfers after the initial set-up, please call Jeff Newman at 954-429-2068 or email billinginquiries@setoyota.com.
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-top_large" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealership Name" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealership Code" disabled="true" />
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-top_x-large slds-text-align_left" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-bottom_xx-large slds-border_bottom" size="8" flexibility="grow"/>
+			<lightning:layoutItem class="slds-p-top_x-small" size="12" flexibility="grow">
+				<lightning:formattedText value="Signature of Dealer Owner General Manager named in Dealer Agreement"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium slds-p-bottom_large slds-border_bottom" size="8" flexibility="grow" />
+			<lightning:layoutItem class="slds-p-top_x-small" size="12" flexibility="grow">
+				<lightning:formattedText value="PRINT Dealer Owner's Name"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<div class="slds-no-print">
+			<lightning:layout class="slds-p-vertical_medium" verticalAlign="start" multipleRows="true">
+				<lightning:layoutItem size="12" class="slds-p-vertical_small slds-text-heading_small">
+					<abbr class="slds-required" title="required">*</abbr>Are you an Authorized Dealer Signer? <abbr class="slds-text-body_small slds-text-color_weak">(Refer to the Authorized Signers list at the top)</abbr>
+					<lightning:radioGroup aura:id="inputField" type="radio" variant="label-hidden" options="{!v.authorizedUserAnswers}" value="{!v.isAuthorizedUser}" onchange="{!c.handleAuthorizedUser}" required="true"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+			<aura:if isTrue="{!v.isAuthorizedUser == 'YES'}">
+				<lightning:layout multipleRows="true">
+					<lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+						To complete process follow the instructions below:
+					</lightning:layoutItem>
+					<lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+						<lightning:layoutItem size="12" flexibility="grow">
+							<ul class="slds-list_ordered">
+								<li>You may submit this form</li>
+							</ul>
+						</lightning:layoutItem>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</aura:if>
+			<aura:if isTrue="{!v.isAuthorizedUser == 'NO'}">
+				<lightning:layout multipleRows="true">
+					<lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+						To complete process follow the instructions below:
+					</lightning:layoutItem>
+					<lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+						<ul class="slds-list_ordered">
+							<li>You must print this form before submitting</li>
+							<li>Submit the form</li>
+							<li>Have an authorized signer sign it</li>
+							<li>Attach a copy of the signed form after submission</li>
+						</ul>
+					</lightning:layoutItem>
+					<lightning:layout multipleRows="true" class="slds-p-top_small">
+						<lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+							<b>Note:</b> the form will NOT be processed if:
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+							<ul class="slds-list--dotted">
+								<li>You are not an authorized signer and fail to attach the signed form</li>
+							</ul>
+						</lightning:layoutItem>
+					</lightning:layout>
+				</lightning:layout>
+			</aura:if>
+		</div>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow" padding="medium">
+				<lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+				<lightning:button label="Print" onclick="{!c.handlePrint}"/>
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

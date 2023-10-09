@@ -1,0 +1,20 @@
+/**
+ * Created by Sean Wallace, Salesforce Developer, 
+ * Ad Victoriam Solutions on 9/13/19.
+ */
+
+
+.THIS {
+}
+
+.THIS h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.25;
+    display: block;
+}
+
+
+.THIS span.subtitle {
+    font-size: 1rem;
+ }

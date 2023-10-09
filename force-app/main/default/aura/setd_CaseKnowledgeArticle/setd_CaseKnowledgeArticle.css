@@ -1,0 +1,31 @@
+/**
+ * Created by Sean Wallace, Salesforce Developer, 
+ * Ad Victoriam Solutions on 9/12/19.
+ */
+
+
+.THIS {
+    /*font-weight: 300;*/
+}
+
+.THIS span.slds-text-body_small {
+    font-size: 1rem;
+}
+
+.THIS .article a {
+    display: block;
+    color: rgba(0, 0, 0, 1);
+    text-decoration: none;
+    font-weight: 300;
+
+}
+
+.THIS .article a:hover {
+    display: block;
+    color: rgb(213, 30, 16);
+    text-decoration: none;
+    font-weight: 300;
+    /*color: rgba(0,0,0,0.8);*/
+    /*font-weight: 300;*/
+    /*border-bottom: 1px solid #222222;*/
+}

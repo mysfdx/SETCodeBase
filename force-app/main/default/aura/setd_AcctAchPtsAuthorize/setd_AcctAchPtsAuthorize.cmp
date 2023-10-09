@@ -1,0 +1,138 @@
+<!--
+ - Created by jeremyasmith on 2019-04-07.
+ -->
+
+<aura:component description="setd_AcctAchPtsAuthorize" controller="setd_AcctAchPtsAuthorizeController" implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="case" type="Case" default="{'sObjectType':'Case'}" />
+    <aura:attribute name="user" type="User" default="{'sObjectType':'User'}" />
+    <aura:attribute name="caseInfo" type="Object"/>
+    <aura:attribute name="picklists" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="c-container">
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-align--absolute-center slds-text-heading_medium">
+                ACCT ACH PTS AUTHORIZE
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout class="slds-size--1-of-1 slds-p-top--medium" horizontalAlign="center" multipleRows="true">
+            <lightning:layoutItem class="slds-size--1-of-1 slds-align--absolute-center slds-text-heading--small">
+                SET ACH PARTS STATEMENT
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-align--absolute-center slds-text-heading--small">
+                ELECTRONIC TRANSFER AUTHORIZATION FORM
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <hr class="slds-p-around--none" />
+
+        <lightning:layout>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="Southeast Toyota Distributors, LLC" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="Attn: Jeff Newman" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="Phone: 954-429-2068" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="111 Jim Moran Blvd." />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="Deerfield Beach, FL 33442" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="MailDrop: SETDF042" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+                    <lightning:layoutItem class="slds-size--1-of-1" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="date" value="{!v.case.CreatedDate}"
+                                         label="Date" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout class="slds-p-top--large" verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem size="12" flexibility="grow" padding="medium">
+                I hereby authorize Southeast Toyota Distributors, LLC., hereafter referred to as "SET", to affect payment
+                in the form of electronic depository transfers or depository transfer checks, to my Bank account indicated below, herinafter
+                called "Bank". I authorize my Bank to accept entries initiated by SET to my account and to credit or debit
+                my account without responsibility for the correctness thereof.
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout class="slds-p-top--small" verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Bank_Name__c}" label="Bank Name" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Bank_Address__c}" label="Bank Address" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="tel" value="{!v.case.Bank_Telephone__c}" label="Bank Telephone #" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Bank_Routing__c}" label="Bank Routing #" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Bank_Account__c}" label="Bank Account #" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-around--xx-small" size="12" flexibility="grow">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Exact_Company_Name_on_Account__c}" label="Exact company name as listed on bank account" required="true" />
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout verticalAlign="start" class="slds-size--1-of-1" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+                    <lightning:layoutItem class="slds-p-top--large slds-p-bottom--x-large" flexibility="grow" padding="medium">
+                        <lightning:formattedText value="Sincerely," />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-p-top--xx-large" flexibility="grow" padding="medium">
+                        <lightning:formattedText class="slds-wrap slds-p-right--large signature" value="Signature of Dealer Owner General Manager" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem flexibility="grow" padding="medium">
+                        <lightning:formattedText class="slds-wrap slds-p-right--large slds-p-bottom--x-large" value="named in Dealer Agreement" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-size--1-of-1 slds-p-top--large" flexibility="grow" padding="medium">
+                        <lightning:formattedText class="slds-wrap slds-p-right--large" value="cc: Dealer's Bank" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem flexibility="grow" padding="medium">
+                        <lightning:formattedText class="slds-wrap slds-p-right--large" value="Attachment: Voided Check" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout class="slds-size--1-of-1" verticalAlign="start" horizontalAlign="space" multipleRows="true">
+                    <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Name}" label="Dealer Name" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Dealer_Code__c}" label="Dealer Code" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}"/>
+                <lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+                <lightning:button label="Print" onclick="{!c.handlePrint}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+    </div>
+
+</aura:component>

@@ -1,0 +1,119 @@
+<aura:component description="setd_VehicleRequestForm" controller="setd_VehicleOrderRequestController">
+	<aura:attribute name="case" type="Case"/>
+	<aura:attribute name="user" type="User"/>
+	<aura:attribute name="contact" type="Contact"/>
+	<aura:attribute name="account" type="Account"/>
+	<aura:attribute name="today" type="Date"/>
+	<aura:attribute name="inputVehicle" type="Object" />
+	<aura:attribute name="vehicleCollection" type="Object[]" default="[]" />
+	<aura:attribute name="latestDeliveryDate" type="Date"/>
+	<aura:attribute name="onBehalfFlag" type="Boolean" default="false"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:handler name="vehicleInputEvent" event="c:TracVehicleInputEvent" action="{!c.handleNewVehicle}" />
+	<aura:handler name="removeVehicleEvent" event="c:RemoveTracVehicleEvent" action="{!c.handleRemoveVehicle}" />
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-align_absolute-center" style="width: 100%; background-color: white">
+		<div class="slds-page-header" style="width: 80%">
+			<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+				<div class="slds-text-heading_medium">Rent a Toyota</div>
+			</lightning:layout>
+
+			<lightning:layout title="Instructions" class="slds-p-vertical_medium" verticalAlign="start" multipleRows="true">
+				<lightning:layoutItem flexibility="grow">
+					<div class="slds-text-body_regular"><b>Instructions:</b> Please refer to TRAC administrative Procedure #2 - TRAC VEHICLE ORDERING</div>
+				</lightning:layoutItem>
+				<lightning:layoutItem flexibility="grow">
+					<div class="slds-text-body_regular">
+						Dealer should complete this form (in lieu of a purchase order or dealer letter) and send by mail
+						of Fax to Region/PD Fleet Manager for processing. <br/>
+						When Region/PD approves, it will request fleet production availability, forward a copy of this
+						form to : TMS Corporate Fleet Department.
+					</div>
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout multipleRows="false">
+				<ui:inputCheckbox aura:id="onBehalf" value="{!v.onBehalfFlag}" />
+				<lightning:formattedText class="slds-text-color_weak slds-text-body_small slds-p-left_small" value="Submitting on Behalf of Dealer ( For use by SETD Associates)" />
+			</lightning:layout>
+
+			<lightning:layout class="slds-p-vertical_medium slds-border_bottom" verticalAlign="start" multipleRows="true">
+				<lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="auto">
+					Dealership Information
+				</lightning:layoutItem>
+				<lightning:layoutItem size="12" flexibility="auto">
+					<lightning:layout horizontalAlign="space" multipleRows="true">
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Request Date" disabled="true"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" disabled="true"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" disabled="true"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="email" value="{!v.case.Requester_Email__c}" label="Requester Email" disabled="{!not(v.onBehalfFlag)}" required="{!v.onBehalfFlag}"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Requester Name" required="true"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Requester Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true"/>
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-top_small" size="5" flexibility="auto" />
+					</lightning:layout>
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout title="TRAC Information" class="slds-p-vertical_medium" verticalAlign="start" multipleRows="true">
+				<lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="auto">
+					TRAC Information
+				</lightning:layoutItem>
+				<lightning:layoutItem size="12">
+					<lightning:layout class="slds-p-vertical_small" multipleRows="true">
+						<lightning:layoutItem size="12" flexibility="grow">
+							<div class="slds-text-body_regular">Requested Delivery Dates</div>
+							<div class="slds-text-color_weak">(Minimum 15 day window required)</div>
+						</lightning:layoutItem>
+						<lightning:layoutItem size="3" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="date" value="{!v.case.Earliest_Requested_Delivery_Date__c}" label="Earliest" min="{!v.today}" onchange="{!c.handleRequestDate}" required="true" />
+						</lightning:layoutItem>
+						<lightning:layoutItem class="slds-p-left_medium" size="3" flexibility="auto">
+							<lightning:input aura:Id="inputField" type="date" value="{!v.case.Latest_Requested_Delivery_Date__c}" label="Latest" min="{!v.latestDeliveryDate}" required="true"  />
+						</lightning:layoutItem>
+					</lightning:layout>
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout class="slds-p-top_small" multipleRows="true">
+				<lightning:layoutItem flexibility="auto">
+					<div class="slds-text-body_regular">Please process this request for the listed vehicles from "J" Category Fleet Production availability for use in our Toyota Rent a Car (TRAC) operations.</div>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1 slds-text-body_small slds-text-color_weak">
+					Enter information and click <b>Add</b>
+				</lightning:layoutItem>
+			</lightning:layout>
+			<lightning:layoutItem class="slds-p-bottom_small">
+				<c:TracVehicleInputTable vehicleCollection="{!v.vehicleCollection}" inputVehicle="{!v.inputVehicle}" />
+			</lightning:layoutItem>
+
+			<lightning:layoutItem size="12">
+				<lightning:layoutItem size="12" flexibility="auto">
+					<lightning:textarea aura:Id="inputField" maxlength="255" value="{!v.case.Comments__c}" label="Remarks"/>
+				</lightning:layoutItem>
+			</lightning:layoutItem>
+
+
+			<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+				<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="auto">
+					<lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+					<lightning:button label="Print" onclick="{!c.handlePrint}"/>
+					<lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</div>
+	</div>
+</aura:component>

@@ -1,0 +1,208 @@
+<!--Modified by        Date              Purpose
+    Neha Agrawal      18 Jun 2021      to change the document submission instructions-->
+
+<aura:component description="setd_IncAchAuthorizationForm" controller="setd_IncAchAuthorizationController">
+    <aura:attribute name="case" type="Case"/>
+    <aura:attribute name="account" type="Account"/>
+    <aura:attribute name="contact" type="Contact"/>
+    <aura:attribute name="today" type="Date"/>
+    <aura:attribute name="authorizeVerbiage" type="String"/>
+    <aura:attribute name="authorizedUserAnswers" type="Object[]" default="[{'value':'YES', 'label':'Yes'}, {'value':'NO', 'label':'No'}]"/>
+    <aura:attribute name="isAuthorizedUser" type="String"/>
+    <aura:attribute name="pendingPrint" type="Boolean" default="true"/>
+    <aura:attribute name="paymentOptions" type="Object[]"/>
+    <aura:attribute name="selectedPaymentOptions" type="List" 
+                    default="[]" description="Selected payment Picklist Values"/>
+    <aura:attribute name="caseId" type="String"/>
+    <aura:attribute name="caseNumber" type="String"/>
+    <aura:attribute name="fileUploadDisabled" type="boolean" default="true"/>
+    <aura:attribute name="voidCheckUpload" type="boolean" default="false"/>
+    <aura:attribute name="bankLetterUpload" type="boolean" default="false"/>
+    <aura:attribute name="proceedBtnDisabled" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+    
+    <div class="slds-page-header">
+        <lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-text-heading_medium slds-text-align_center slds-size_1-of-1">
+                ELECTRONIC TRANSFER AUTHORIZATION FORM
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-text-heading_small slds-text-align_center slds-size_1-of-1">
+                ACCT ACH AUTHORIZATION – ELECTRONIC PAYMENTS
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <lightning:layout class="slds-p-top_large" horizontalAlign="center">
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:formattedText class="slds-text-body_regular" value="{!v.authorizeVerbiage}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <lightning:layout class="slds-size_1-of-1 slds-p-top_large">
+            <lightning:layoutItem class="slds-col slds-size_1-of-2">
+                <lightning:layout verticalAlign="start" multipleRows="true">
+                    <lightning:layoutItem class="slds-text-body_regular slds-size_1-of-1" flexibility="grow" padding="medium">
+                        Questions? <br />
+                        Email billinginquiries@setoyota.com <br />
+                        or call Jeff Newman at 954-429-2068
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-col slds-size_1-of-2">
+                <lightning:layout verticalAlign="start" multipleRows="true">
+                    <lightning:layoutItem class="slds-size_1-of-1" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Date" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <lightning:layout class="slds-p-top_small" verticalAlign="start" multipleRows="true">
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:dualListbox aura:Id="inputField" options="{!v.paymentOptions}" value="{!v.selectedPaymentOptions}" label="Change Account For:" required="true" onchange="{!c.handlePaymentChange}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Bank_Name__c}" label="Bank Name" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Bank_Address__c}" label="Bank Address" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="tel" value="{!v.case.Bank_Telephone__c}" label="Bank Telephone #" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Bank_Routing__c}" label="Bank Routing #" pattern="\d+" messageWhenPatternMismatch="Please enter numerical value" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Bank_Account__c}" label="Bank Account #" pattern="\d+" messageWhenPatternMismatch="Please enter numerical value" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Exact_Company_Name_on_Account__c}" label="Exact company name as listed on bank account" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="email" value="{!v.case.Dealer_Email_Address_for_Notifications__c}" label="Dealer Email Address: (For ACH Payment Notifications)" required="true" multiple="true"
+                                 messageWhenTypeMismatch="Please enter valid Email Addresses separated by comma (,) "/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.case.Dealer_GM_Named_in_Dealer_Agreement__c}" label="Full Name of Dealer Owner/General Manager" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" required="true" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" flexibility="grow">
+                <lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" required="true" disabled="true" />
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <!--<lightning:layout class="slds-p-top_x-large slds-text-align_left" verticalAlign="start" multipleRows="true">
+   <lightning:layoutItem class="slds-p-bottom_xx-large slds-border_bottom" size="8" flexibility="grow">
+    <lightning:formattedText value="Sincerely,"/>
+   </lightning:layoutItem>
+   <lightning:layoutItem class="slds-p-top_x-small" size="12" flexibility="grow">
+    <lightning:formattedText value="Signature of Dealer Owner General Manager named in Dealer Agreement"/>
+   </lightning:layoutItem>
+   <lightning:layoutItem class="slds-p-top_medium slds-p-bottom_large slds-border_bottom" size="8" flexibility="grow" />
+   <lightning:layoutItem class="slds-p-top_x-small" size="12" flexibility="grow">
+    <lightning:formattedText value="PRINT Dealer Owner's Name"/>
+   </lightning:layoutItem>
+  </lightning:layout>-->
+        
+        <div class="slds-no-print">
+            <lightning:layout class="slds-p-vertical_medium" verticalAlign="start" multipleRows="true">
+                <lightning:layoutItem size="12" class="slds-p-vertical_small slds-text-heading_small">
+                    <abbr class="slds-required" title="required">*</abbr>You must be an Authorized Signer to submit this form.<br/>
+                    <abbr class="slds-text-body_small slds-text-color_weak slds-p-left_medium">(Refer to the Authorized Signers list at the top)</abbr>
+                    <!--<lightning:radioGroup aura:id="inputField" type="radio" variant="label-hidden" options="{!v.authorizedUserAnswers}" value="{!v.isAuthorizedUser}" onchange="{!c.handleAuthorizedUser}" required="true"/>-->
+                </lightning:layoutItem>
+            </lightning:layout>
+            <!--<aura:if isTrue="{!v.isAuthorizedUser == 'YES'}">-->
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+                    To complete process follow the instructions below:
+                </lightning:layoutItem>
+                <lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+                    <lightning:layoutItem size="12" flexibility="grow">
+                        <ul class="slds-list_ordered">
+                            <li>Please proceed to the form to attach your voided check copy or bank letter</li>
+                            <li>You MUST attach a copy of the voided check or bank letter before submission</li>
+                        </ul>
+                    </lightning:layoutItem>
+                </lightning:layoutItem>
+                <lightning:layout multipleRows="true" class="slds-p-top_small">
+                    <lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+                        <b>Note:</b> the form will NOT be processed if:
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+                        <ul class="slds-list--dotted">
+                            <li>Missing copy of voided check or bank letter</li>
+                        </ul>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layout>
+            <!--</aura:if>-->
+            <!--<aura:if isTrue="{!v.isAuthorizedUser == 'NO'}">
+    <lightning:layout multipleRows="true">
+     <lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+      To complete process follow the instructions below:
+     </lightning:layoutItem>
+     <lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+      <ul class="slds-list_ordered">
+       <li>You must print this form before submitting</li>
+       <li>Submit the form</li>
+       <li>Have an authorized signer sign it</li>
+       <li>Attach a copy of the voided check and signed form after submission</li>
+      </ul>
+     </lightning:layoutItem>
+     <lightning:layout multipleRows="true" class="slds-p-top_small">
+      <lightning:layoutItem class="slds-text-heading_small" size="12" flexibility="grow">
+       <b>Note:</b> the form will NOT be processed if:
+      </lightning:layoutItem>
+      <lightning:layoutItem class="slds-p-left_small" size="12" flexibility="grow">
+      
+        <li>Missing copy of voided check</li>
+        <li>You are not an authorized signer and fail to attach the signed form</li>
+       
+      </lightning:layoutItem>
+     </lightning:layout>
+    </lightning:layout>
+   </aura:if>-->
+        </div>
+        
+        <lightning:layout class="slds-no-print slds-p-top_medium slds-p-bottom_small slds-border_bottom" pullToBoundary="small" multipleRows="true" horizontalAlign="center">
+            <lightning:layoutItem class="slds-p-top_large slds-text-align_center" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Proceed" onclick="{!c.handleSubmit}" disabled="{!v.proceedBtnDisabled}" class="slds-button slds-button_destructive"/>
+            </lightning:layoutItem>
+            
+                <lightning:layoutItem class="slds-text-body_regular slds-p-left_large slds-p-bottom_medium" size="12" padding="medium">
+                    Please upload VOIDED CHECK here.
+                    <lightning:fileUpload aura:id="ReqFileUploader" 
+                                          recordId="{!v.caseId}" 
+                                          title="To upload documents, click this button" 
+                                          multiple="true" 
+                                          disabled="{!v.fileUploadDisabled}" 
+                                          onuploadfinished="{!c.handleVoidCheck}"
+                                          />
+                </lightning:layoutItem>
+                
+                
+                    <lightning:layoutItem class="slds-text-body_regular slds-p-left_large" size="12">
+                        Please upload BANK LETTER here.
+                        <lightning:fileUpload aura:id="ReqFileUploader" 
+                                              recordId="{!v.caseId}" 
+                                              title="To upload documents, click this button" 
+                                              multiple="true" 
+                                              disabled="{!v.fileUploadDisabled}" 
+                                              onuploadfinished="{!c.handleBankLetter}"/>
+                    </lightning:layoutItem>
+        </lightning:layout>
+        
+        <lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+                <lightning:button label="Print" onclick="{!c.handlePrint}"/>
+                <lightning:button label="Submit" onclick="{!c.handleActualSubmit}" disabled="{!v.fileUploadDisabled}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

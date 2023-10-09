@@ -1,0 +1,153 @@
+<aura:component description="setd_ReturnToPortForm" controller="setd_ReturnToPortController">
+	<aura:attribute name="case" type="Case" />
+	<aura:attribute name="user" type="User" />
+	<aura:attribute name="contact" type="Contact" />
+	<aura:attribute name="account" type="Account" />
+	<aura:attribute name="today" type="Account" />
+	<aura:attribute name="returnToPorts" type="Object[]" />
+	<aura:attribute name="vehicleDeliveryStatuses" type="Object[]" />
+	<aura:attribute name="radioOptions" type="List" />
+	<aura:attribute name="minBackhaulDate" type="String" />
+	<aura:attribute name="scheduledBackhaulPickup" type="Boolean" default="false" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-page-header">
+		<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+			<div class="slds-text-heading_medium">Return to Port</div>
+		</lightning:layout>
+		<lightning:layout verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.today}" type="date" label="Date of Request" required="true" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:id="inputField" label="Which Port would you like to send the vehicle back to?" value="{!v.case.Return_to_Port__c}" required="true">
+					<option value=""> -- Select Port -- </option>
+					<aura:iteration items="{!v.returnToPorts}" var="item">
+						<option label="{!item.label}" value="{!item.value}" selected="{!item.value == v.case.Return_to_Port__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+
+			<lightning:layoutItem class="slds-p-top_large slds-text-heading_small" size="12" flexibility="grow" padding="small">
+				How will the vehicle get back to port?
+			</lightning:layoutItem>
+			<div class="slds-text-align_left">
+				<lightning:radioGroup aura:id="inputField" options="{!v.radioOptions}" value="{!v.case.How_will_the_vehicle_get_back_to_port__c}" type="radio" onchange="{!c.handleRadioClick}" variant="label-hidden" required="true"/>
+			</div>
+
+			<aura:if isTrue="{!v.scheduledBackhaulPickup}">
+				<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+					<div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+						<span class="slds-assistive-text">warning</span>
+						<span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+					<lightning:icon iconName="utility:warning" />
+				</span>
+						<h2 class="slds-text-align_left">The dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage.</h2>
+					</div>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+					<lightning:input aura:id="inputFieldDate" value="{!v.case.Backhaul_Date_Requested__c}" type="date" label="Date of backhaul request." required="true" min="{!v.minBackhaulDate}" onchange="{!c.handleDateValidation}" />
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+					<lightning:input aura:id="inputField" value="{!v.case.Backhaul_Confirmation_Number__c}" type="text" label="If you've already setup a backhaul, enter confirmation here:" />
+				</lightning:layoutItem>
+			</aura:if>
+
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.case.SET_VIN__c}" label="VIN Number" pattern="[a-zA-Z0-9]{17}" messageWhenPatternMismatch="Invalid VIN Number" onchange="{!c.handleVINInput}" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.case.Model_Number__c}" label="Model" pattern="\d{4}" messageWhenPatternMismatch="Please enter four digit value" required="true" />
+			</lightning:layoutItem>
+
+			<lightning:layoutItem class="slds-p-top_large slds-text-heading_small" size="12" flexibility="grow" padding="small">
+				Please list the accessories you would like installed by providing the name of the accessory and the applicable PIO code.
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_1__c}" label="Accessory Name / PIO Code" type="text" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_2__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_3__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_4__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_5__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_6__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_7__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_8__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_9__c}" type="text" required="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_xxx-small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" value="{!v.case.Accessory_and_Applicable_PIO_code_10__c}" type="text" required="false" />
+			</lightning:layoutItem>
+
+			<lightning:layoutItem class="slds-p-top_large" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" required="true" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" required="true" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Contact Name" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.case.RTP_Contact_Phone__c}" label="Contact Phone Number" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:id="inputField" type="text" value="{!v.case.Authorized_Name__c}" label="Authorized Name" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:id="inputField" label="Vehicle Delivery Status" value="{!v.case.Vehicle_Delivery_Status__c}" required="true">
+					<option value=""> -- Select Delivery Status -- </option>
+					<aura:iteration items="{!v.vehicleDeliveryStatuses}" var="item">
+						<option label="{!item.label}" value="{!item.value}" selected="{!item.value == v.case.Vehicle_Delivery_Status__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:textarea aura:id="inputField" value="{!v.case.Comments__c}" label="Comments" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+					<span class="slds-assistive-text">warning</span>
+					<span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small">
+						<lightning:icon iconName="utility:warning" />
+					</span>
+					<h2 class="slds-text-align_left">To allow for a smooth and timely installation, please be sure that the interior of the vehicle does not contain any miscellaneous items.</h2>
+				</div>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="medium">
+				<div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+					<span class="slds-assistive-text">warning</span>
+					<span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small">
+						<lightning:icon iconName="utility:warning" />
+					</span>
+					<h2 class="slds-text-align_left">Note: Make sure to refer to your revised vehicle invoice for the most current and accurate pricing. This is the ONLY source that will include updated pricing for accessories added or removed after wholesale.</h2>
+				</div>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow" padding="medium">
+				<lightning:button class="slds-button slds-button_destructive" label="Clear Form" onclick="{!c.resetForm}" />
+				<lightning:button label="Print" onclick="{!c.handlePrint}" />
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}" />
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

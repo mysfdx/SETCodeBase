@@ -1,0 +1,75 @@
+<aura:component description="setd_DAPChallengeVINForm" controller="setd_DAPChallengeVINController">
+	<aura:attribute name="case" type="Case" />
+	<aura:attribute name="contact" type="Contact" />
+	<aura:attribute name="account" type="Account" />
+	<aura:attribute name="today" type="Account" />
+	<aura:attribute name="inputVin" type="Object" />
+	<aura:attribute name="vinCollection" type="Object[]" default="[]" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:handler name="vinInputEvent" event="c:DAPChallengeVinInputEvent" action="{!c.handleNewVin}" />
+	<aura:handler name="removeVinEvent" event="c:DAPChallengeVinRemoveEvent" action="{!c.handleRemoveVin}" />
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-align_absolute-center" style="width: 100%; background-color: white">
+		<div class="slds-page-header" style="width: 75%">
+			<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" multipleRows="true">
+				<lightning:layoutItem class="slds-text-align_center slds-text-heading_medium slds-size_1-of-1">
+					DAP Challenge by VIN Form
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout class="slds-p-vertical_small slds-border_bottom" multipleRows="true">
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Request Date" disabled="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" disabled="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" disabled="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Requester Name" required="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Requester Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1" flexibility="auto">
+					<lightning:input aura:Id="inputField" type="email" value="{!v.contact.Email}" label="Requester Email" disabled="true"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout class="slds-p-vertical_small slds-border_bottom" multipleRows="true">
+				<lightning:layoutItem class="slds-size_1-of-1 slds-text-heading_small slds-p-vertical_x-small">
+					Vehicle Information
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-size_1-of-1 slds-text-body_small slds-text-color_weak">
+					Enter vehicle information and click <b>Add Vehicle</b>
+				</lightning:layoutItem>
+				<c:DAPChallengeVinInputTable vinCollection="{!v.vinCollection}" inputVin="{!v.inputVin}" />
+			</lightning:layout>
+
+			<lightning:layout class="slds-p-vertical_small" multipleRows="true">
+				<lightning:layoutItem class="slds-text-align_left">
+					<b>NOTE: DAP reimbursement required the completion of:</b>
+				</lightning:layoutItem>
+				<lightning:layoutItem class="slds-text-align_left">
+					<ul class="slds-list_dotted">
+						<li>PDS (Port Pre-Delivery Service Qualifies)</li>
+						<li>Full Tank of Gas</li>
+						<li>Vehicle Feature Demonstration</li>
+					</ul>
+				</lightning:layoutItem>
+			</lightning:layout>
+
+			<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+				<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="auto" padding="medium">
+					<lightning:button class="slds-button slds-button_destructive" label="Clear Form" onclick="{!c.handleClear}" />
+					<lightning:button label="Print" onclick="{!c.handlePrint}" />
+					<lightning:button label="Submit" onclick="{!c.handleSubmit}" />
+				</lightning:layoutItem>
+			</lightning:layout>
+		</div>
+	</div>
+</aura:component>

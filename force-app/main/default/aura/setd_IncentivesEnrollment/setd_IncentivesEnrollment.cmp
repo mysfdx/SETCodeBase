@@ -1,0 +1,269 @@
+<!--
+ - Created by jeremyasmith on 2019-04-06.
+ -->
+
+<aura:component description="setd_IncentivesEnrollment" controller="setd_IncentivesEnrollmentController"
+                implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="case" type="Case" default="{'sObjectType':'Case'}"/>
+    <aura:attribute name="user" type="User" default="{'sObjectType':'User'}"/>
+    <aura:attribute name="payees" type="Payee__c[]" default=""/>
+
+    <aura:attribute name="caseInfo" type="Object"/>
+    <aura:attribute name="picklists" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="c-container">
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <div class="slds-text-heading_medium">Incentives Programs - Lifetime Enrollment Form</div>
+        </lightning:layout>
+
+        <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <!--<lightning:formattedText value="If you chose a backhaul, the dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage. (If you've already setup backhaul, list the backhaul # below" />-->
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small"
+                          title="Description of icon when needed">
+                            <lightning:icon iconName="utility:info"/>
+                        </span>
+                    <h2 class="slds-text-align--left">Electronic submissions constitute an approved Dealer/GM
+                        signature.</h2>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Name}" label="Dealer Name"
+                                 required="true" disabled="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Dealer_Code__c}"
+                                 label="Dealer Code" required="true" disabled="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Dealer_GM_Named_in_Dealer_Agreement__c}"
+                                 label="Dealer/General Manager named in agreement" required="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.District__c}" label="District"
+                                 required="true" disabled="true"/>
+            </lightning:layoutItem>
+
+        </lightning:layout>
+        <!--<br />-->
+
+        <!--<lightning:layout multipleRows="true">-->
+        <!--<lightning:layoutItem class="slds-align&#45;&#45;left" flexibility="grow"  size="12">-->
+        <!--<lightning:formattedText class="slds-text-title&#45;&#45;bold" value="This enrollment form will enroll your dealership in all of the Southeast Toyota Incentive Programs listed below:" />-->
+        <!--</lightning:layoutItem>-->
+        <!--</lightning:layout>-->
+
+        <!-- INCENTIVES SECTION -->
+
+
+        <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+
+            <lightning:layoutItem class="slds-p-top--large slds-grid--pull-padded" size="12" flexibility="grow"
+                                  padding="medium">
+
+                <lightning:card title="Enrollments">
+
+                    <p class="slds-p-horizontal_small slds-text-title">
+                        I hereby enroll my dealership in the following Southeast Toyota Incentive Programs. I understand
+                        that once this document is received by the SET Incentives Department,
+                        I am enrolled in all listed SET Incentive Department Programs from the date of receipt until I
+                        notify SET otherwise. Official program parameters and rules can be found on the SET
+                        Dealer Daily. If you have any questions, please call the Incentives Department at (954)429-2186.
+                    </p>
+
+                    <p class="slds-p-horizontal_small slds-p-top--medium slds-p-left--large slds-size--1-of-1 slds-grow">
+                        <lightning:input aura:Id="inpField" type="date" value="{!v.case.Effective_Date__c}"
+                                         label="Effective Date" required="true"/>
+                        <div class="slds-notify slds-notify_alert slds-theme--default" role="alert">
+                            <span class="slds-assistive-text">warning</span>
+                            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small"
+                                  title="Description of icon when needed">
+                                            <lightning:icon iconName="utility:info"/>
+                                        </span>
+                            <h2 class="slds-text-align--left slds-p-top--medium">
+                                This enrollment form will enroll your dealership in all of the Southeast Toyota Incentive
+                                Programs listed below.
+                            </h2>
+                        </div>
+                    </p>
+
+                    <p class="slds-box--default slds-theme--inverse slds-theme--inverse-text slds-size--1-of-1 slds-p-left--large slds-grow slds-wrap">
+
+                        <div class="slds-grid slds-p-around-small slds-col slds-size--2-of-2 slds-medium-size--1-of-2 slds-grow">
+                            <div class="slds-col slds-size--1-of-1">
+                                <lightning:icon class="slds-p-right--x-small slds-p-left--large red-check"
+                                                iconName="utility:check" size="xx-small"/>
+                                <lightning:formattedText value="Payable to Dealership Only"/>
+                            </div>
+                            <div class="slds-col slds-size--1-of-1">
+                                <lightning:icon class="slds-p-right--x-small slds-p-left--large green-check"
+                                                iconName="utility:check" size="xx-small"/>
+                                <lightning:formattedText value="Payable to Dealership -or- Consumer"/>
+                                <p class="slds-text-title slds-text-color_inverse slds-p-left--large">
+                                    These programs are paid as per submission by dealership/customer coupon
+                                </p>
+                            </div>
+                        </div>
+                    </p>
+
+                    <p class="slds-grid slds-size--1-of-1 slds-p-left--large slds-p-top--small slds-grow slds-wrap">
+
+                        <div class="slds-p-around-small slds-col slds-size--2-of-2 slds-medium-size--1-of-2 slds-grow">
+
+                            <aura:iteration
+                                    items="['Dealer Cash', 'Dealer Retro', 'Dealer Choice', 'Dealer Performance Challenge']"
+                                    var="incentive">
+                                <div>
+                                    <lightning:icon class="slds-p-right--x-small slds-p-left--large red-check"
+                                                    iconName="utility:check" size="xx-small"/>
+                                    <lightning:formattedText value="{!incentive}"/>
+                                </div>
+                            </aura:iteration>
+
+                            <div class="slds-p-top--small">
+                                <aura:iteration
+                                        items="['Consumer Cash Back Programs', 'Direct Mail / Certificate / Coupon Program']"
+                                        var="incentive">
+                                    <div>
+                                        <lightning:icon class="slds-p-right--x-small slds-p-left--large green-check"
+                                                        iconName="utility:check" size="xx-small"/>
+                                        <lightning:formattedText value="{!incentive}"/>
+                                    </div>
+                                </aura:iteration>
+                            </div>
+
+
+                            <div>
+                                <lightning:icon class="slds-p-right--x-small slds-p-left--large red-check"
+                                                iconName="utility:check" size="xx-small"/>
+                                <lightning:formattedText value="Monthly Market Challenge Programs"/>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Market_Challenge_Program_New_Car__c}"
+                                                  label="New Car (Dealer Participation: $50)">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.marketChallengeProgramsNewCar}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Market_Challenge_Program_Certified__c}"
+                                                  label="Certified (Dealer Participation: $25)">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.marketChallengeProgramsCertified}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+
+                        </div>
+
+                        <div class="slds-p-horizontal--small slds-col slds-size--2-of-2 slds-medium-size--1-of-2 slds-grow">
+
+                            <div>
+                                <lightning:icon class="slds-p-right--x-small slds-p-left--small red-check"
+                                                iconName="utility:check" size="xx-small"/>
+                                <lightning:formattedText value="Pullboard Programs"/>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Pullboard_Program_New_Car__c}"
+                                                  label="New Car (Dealer Participation: $50)">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.pullboardProgramsNewCar}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Pullboard_Program_Certified__c}"
+                                                  label="Certified (Dealer Participation: $25)">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.pullboardProgramsCertified}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+
+                            <div class="slds-p-top--small">
+                                <lightning:icon class="slds-p-right--x-small slds-p-left--small red-check"
+                                                iconName="utility:check" size="xx-small"/>
+                                <lightning:formattedText value="Sales Manager Programs"/>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Sales_Manager_Program_New_Car__c}" label="New Car">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.salesManagerProgramsNewCar}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+
+                            <div>
+                                <lightning:select class="slds-p-left--large slds-text-title--bold" aura:Id="inpField"
+                                                  value="{!v.case.Sales_Manager_Program_Certified__c}" label="Certified">
+                                    <option label="None" value=""/>
+                                    <aura:iteration items="{!v.picklists.salesManagerProgramsCertified}" var="item">
+                                        <option label="{!item.label}" value="{!item.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </p>
+                </lightning:card>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem class="slds-p-top--large slds-grid--pull-padded" size="12" flexibility="grow" padding="medium">
+                <lightning:card title="Payees">
+                    <aura:iteration items="{!v.payees}" var="item">
+                        <c:setd_IncentivesEnrollmentPayees payeeTypes="{!v.picklists.payeeTypes}" payee="{!item}" />
+                    </aura:iteration>
+                    <aura:set attribute="footer">
+                        <lightning:button label="Add Payee" onclick="{!c.handleAdd}" />
+                        <lightning:button label="Remove Payee" onclick="{!c.handleRemove}" />
+                    </aura:set>
+                </lightning:card>
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <!--<lightning:layout class="slds-p-top&#45;&#45;medium" horizontalAlign="center" pullToBoundary="small"-->
+                          <!--multipleRows="false">-->
+            <!--<lightning:layoutItem size="12" flexibility="grow" class="slds-text-align&#45;&#45;center">-->
+                <!--<div class="slds-box slds-theme&#45;&#45;default ">-->
+                    <!--<p class="slds-text-title&#45;&#45;caps">-->
+                        <!--Programs Payable to Dealership Only:<br/>-->
+                        <!--Dealer Cash / Dealer-->
+                    <!--</p>-->
+                <!--</div>-->
+            <!--</lightning:layoutItem>-->
+        <!--</lightning:layout>-->
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}"/>
+                <lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+                <lightning:button label="Print" onclick="{!c.handlePrint}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+
+    </div>
+
+</aura:component>

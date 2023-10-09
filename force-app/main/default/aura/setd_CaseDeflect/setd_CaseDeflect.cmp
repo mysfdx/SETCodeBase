@@ -1,0 +1,29 @@
+<!--
+ - Created by Sean Wallace, Salesforce Developer, 
+ - Ad Victoriam Solutions on 9/12/19.
+ -->
+
+<aura:component description="setd_CaseDeflect" implements="forceCommunity:availableForAllPageTypes" controller="setd_CaseProductLookup" access="global">
+
+    <aura:attribute name="selectedProductId" type="String"  />
+    <aura:attribute name="knowledgeArticles" type="List"  />
+    <aura:handler event="c:setd_CaseProductEvt" action="{!c.handleProductUpdate}"/>
+    <!-- BODY -->
+    <div class="slds-align-content-center slds-text-align--center">
+        <h1>Need Answers Fast?</h1>
+        <span class="subtitle">Find what you need here.</span>
+    </div>
+
+
+    <ul>
+        <div class="slds-grid--vertical slds-wrap slds-has-block-links">
+            <aura:iteration items="{!v.knowledgeArticles}" var="kav">
+                <li>
+                    <c:setd_CaseKnowledgeArticle article="{!kav}" />
+                </li>
+            </aura:iteration>
+        </div>
+    </ul>
+
+
+</aura:component>

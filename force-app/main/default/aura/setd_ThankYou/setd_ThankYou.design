@@ -1,0 +1,12 @@
+<!--
+ - Created by jeremyasmith on 2019-04-04.
+ -->
+
+<design:component>
+    <design:attribute name="id" label="Id of record" />
+    <design:attribute name="case_number" label="Label" />
+    <design:attribute name="object_label" label="Object Label" />
+    <design:attribute name="object_value" label="Object Value" />
+     <design:attribute name="case_challenge" label="Case challenge type" />
+    <design:attribute name="redirect_url" label="Destination on Close" />
+</design:component>

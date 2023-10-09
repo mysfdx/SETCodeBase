@@ -1,0 +1,111 @@
+<aura:component description="TracVehicleCollectionTable">
+	<aura:attribute name="vehicleCollection" type="Object[]" required="true" />
+
+	<aura:registerEvent name="removeVehicleEvent" type="c:RemoveTracVehicleEvent" />
+
+	<lightning:layout horizontalAlign="end">
+		<div style="width: 10%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>Model Number<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 5%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>Qty<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 10%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Color (Int/Ext)"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 46.66%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Factory Installed Options/Accessories"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 23.33%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Port-Installed Options (PIO)"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 5%">
+			<lightning:layoutItem />
+		</div>
+	</lightning:layout>
+
+	<aura:iteration items="{!v.vehicleCollection}" var="vehicle" indexVar="i">
+		<lightning:layout horizontalAlign="spread">
+			<div style="width: 10%">
+				<lightning:layoutItem>
+					<lightning:input label="Model Number" type="text" value="{!vehicle.Model_Number__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5%">
+				<lightning:layoutItem>
+					<lightning:input label="Qty" type="text" value="{!vehicle.Quantity__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 10%">
+				<lightning:layoutItem>
+					<lightning:input label="Color" type="text" value="{!vehicle.Color__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 1" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_1__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 2" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_2__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 3" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_3__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 4" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_4__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 5" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_5__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 7.777%">
+				<lightning:layoutItem>
+					<lightning:input label="Factory Installed Option 6" type="text" value="{!vehicle.Factory_Installed_Option_Accessory_6__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5.833%">
+				<lightning:layoutItem>
+					<lightning:input label="Port Installed Option 1" type="text" value="{!vehicle.Port_Installed_Option_1__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5.833%">
+				<lightning:layoutItem>
+					<lightning:input label="Port Installed Option 2" type="text" value="{!vehicle.Port_Installed_Option_2__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5.833%">
+				<lightning:layoutItem>
+					<lightning:input label="Port Installed Option 3" type="text" value="{!vehicle.Port_Installed_Option_3__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5.833%">
+				<lightning:layoutItem>
+					<lightning:input label="Port Installed Option 4" type="text" value="{!vehicle.Port_Installed_Option_4__c}" variant="label-hidden" disabled="true" />
+				</lightning:layoutItem>
+			</div>
+			<div style="width: 5%">
+				<lightning:layoutItem>
+					<lightning:buttonIcon class="slds-button_destructive" variant="border-filled" iconName="utility:close" title="remove" alternativeText="Remove" value="{!i}" onclick="{!c.handleRemoveVehicle}" />
+				</lightning:layoutItem>
+			</div>
+		</lightning:layout>
+	</aura:iteration>
+</aura:component>

@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global" >
+	<div style="background-color:white;height:100px;">
+    <a href="https://prod-setservices-a-webdmz.aws.jmfamily.com/SETReportsLauncher/Home/Region?launchedFrom=DEALERCONNECT" target="_blank">
+        <div class="slds-align_absolute-center">
+            <img src="{!$Resource.SET_Field_Report_Logo}" style="margin:5px 0px 5px 5px"/>
+        </div>
+        
+    </a>
+    </div>
+</aura:component>

@@ -1,0 +1,22 @@
+<!--
+ - Created by Sean Wallace, Salesforce Developer, 
+ - Ad Victoriam Solutions on 9/12/19.
+ -->
+
+<aura:component description="setd_CaseKnowledgeArticle">
+    <aura:attribute name="article" type="Knowledge__kav" />
+
+    <!-- BODY -->
+    <div class="comm-topic-trending-articles__item slds-p-around--small slds-border--bottom">
+        <div class="article">
+            <a href="{!'/Forms/s/article/' + v.article.UrlName}">
+                <span class="slds-text-body_small slds-show">{!v.article.Title}</span>
+                <span class="slds-text-body_small slds-show">
+                <lightning:formattedDateTime value="{!v.article.FirstPublishedDate}">
+               </lightning:formattedDateTime> - {!v.article.DS_Product__r.Name}
+            </span>
+            </a>
+        </div>
+    </div>
+
+</aura:component>

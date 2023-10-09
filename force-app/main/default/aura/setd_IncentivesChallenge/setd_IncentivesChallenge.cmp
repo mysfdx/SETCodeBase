@@ -1,0 +1,104 @@
+<!--
+ - Created by jeremysmith on 2019-03-23.
+ -->
+
+<aura:component description="setd_IncentivesChallenge" controller="setd_IncentivesChallengeController" implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="case" type="Case" default="{'sObjectType':'Case'}" />
+    <aura:attribute name="user" type="User" default="{'sObjectType':'User'}" />
+    <aura:attribute name="challenges" type="Object[]" />
+    <aura:attribute name="files" type="Object[]" />
+    <!--<aura:attribute name="binaries" type="String[]" default="[]" />-->
+    <!--<aura:attribute name="filenames" type="Object[]" default="[]" />-->
+
+    <!--<lightning:navigation aura:id="nav"/>-->
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="c-container">
+        <lightning:layout horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <div class="slds-text-heading_medium">Incentives Challenge</div>
+        </lightning:layout>
+        <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="small">
+                <lightning:select label="Challenge" value="{!v.case.Challengex__c}">
+                    <option value=""> -- Select a Challenge -- </option>
+                    <aura:iteration items="{!v.challenges}" var="item">
+                        <option value="{!item.value}" label="{!item.label}" />
+                    </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.SET_VIN__c}" type="text" label="VIN Number" pattern="^([A-Z\d]{3})[A-Z]{2}\d{2}([A-Z\d]{1})([X\d]{1})([A-Z\d]{3})\d{5}$" messageWhenPatternMismatch="Invalid VIN Number" required="true" onchange="{!c.handleVin}" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Model_Number__c}" label="Model" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Model_Year__c}" label="Model Year" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="date" value="{!v.case.Retail_Date__c}" label="Retail Date" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Contest_Number__c}" label="Contest #" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Customer_Offer_Number__c}" label="Customer Offer #" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.user.Name}" label="Name" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.user.Email}" label="Email Address" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.user.Phone}" label="Phone" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:textarea maxlength="255" value="{!v.case.Reason_for_Challenge__c}" label="Reason for Challenge" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input type="number" formatter="currency" value="{!v.case.Incentive_Amount__c}" label="Incentive Amount" />
+            </lightning:layoutItem>
+            <!--<lightning:layoutItem class="slds-p-top&#45;&#45;small" size="12" flexibility="grow" padding="medium">-->
+                <!--<lightning:input name="file1" type="file" label="File Upload" multiple="true" accept="image/png, .zip" onchange="{! c.handleFilesChange }"/>-->
+                <!--&lt;!&ndash;<lightning:fileUpload label="Attachment" multiple="true" recordId="abcd" />&ndash;&gt;-->
+            <!--</lightning:layoutItem>-->
+            <aura:if isTrue="{!v.filenames.length > 0}">
+                <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                    <aura:iteration items="{!v.filenames}" var="item">
+                        <lightning:formattedText value="{!item}" />
+                    </aura:iteration>
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <aura:iteration items="{!v.files}" var="item">
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem class="slds-p-top--small" size="2" flexibility="grow" padding="medium">
+                            <lightning:formattedText value="{!item.name}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem class="slds-p-top--small" size="2" flexibility="grow" padding="medium">
+                            <lightning:formattedNumber value="{!item.size}" />
+                            <lightning:formattedText value="Kb" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem class="slds-p-top--small" size="2" flexibility="grow" padding="medium">
+                            <lightning:formattedText value="{!item.type}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:iteration>
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}" />
+                <lightning:button label="Submit" onclick="{!c.handleSubmit}" />
+                <lightning:button label="Print" onclick="{!c.handlePrint}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+
+    </div>
+
+</aura:component>

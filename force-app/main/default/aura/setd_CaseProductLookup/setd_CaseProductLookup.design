@@ -1,0 +1,9 @@
+<!--
+ - Created by Sean Wallace, Salesforce Developer, 
+ - Ad Victoriam Solutions on 9/11/19.
+ -->
+
+<design:component label="CaseProductLookup">
+    <design:attribute name="selectedProductId" label="Product" />
+    <design:attribute name="parentProductId" label="Parent Product" />
+</design:component>

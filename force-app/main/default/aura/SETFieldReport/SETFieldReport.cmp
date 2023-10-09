@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable" access="global"> 
+cmp.find("navigationService").navigate({ 
+    type: "standard__webPage", 
+    attributes: { 
+        url: 'http://salesforce.com' 
+    } 
+});
+</aura:component>

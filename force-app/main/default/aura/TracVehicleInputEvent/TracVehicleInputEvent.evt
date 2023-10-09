@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="TracVehicleInputEvent">
+    <aura:attribute name="inputVehicle" type="Object" />
+</aura:event>

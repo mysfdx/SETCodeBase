@@ -1,0 +1,30 @@
+<aura:component description="setd_ThankYou" implements="forceCommunity:availableForAllPageTypes,forceCommunity:themeLayout,lightning:isUrlAddressable" access="GLOBAL">
+	<aura:attribute name="id" type="String" />
+    <aura:attribute name="case_challenge" type="String" description="Label of Identifier" />
+	<aura:attribute name="case_number" type="String" description="Label of Identifier" />
+	<aura:attribute name="object_label" type="String" description="Label of Identifier" />
+	<aura:attribute name="object_value" type="String" description="Identifier of Object. ex: Case Number" />
+	<aura:attribute name="accept" type="List" default="['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png']"/>
+	<aura:attribute name="redirect_url" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<lightning:layout multipleRows="true">
+		<lightning:layoutItem size="12" class="slds-text-align_center slds-text-heading_large slds-p-vertical_large">
+			Thank You!
+		</lightning:layoutItem>
+		<lightning:layoutItem size="12" class="slds-text-align_center slds-text-heading_medium">
+			Your {!v.object_label} is&nbsp;<b>{!v.object_value}</b>
+		</lightning:layoutItem>
+	</lightning:layout>
+   <aura:if isTrue="{!not(v.case_challenge=='Presold')}">
+	<lightning:layout multipleRows="true" class="slds-p-vertical_small">
+		<lightning:layoutItem size="12" class="slds-text-align_center slds-text-heading_small">
+			<lightning:fileUpload recordId="{!v.id}" label="Do you have additional files to upload?" title="To upload supporting files, click this button" accept="{!v.accept}" multiple="true" />
+		</lightning:layoutItem>
+	</lightning:layout>
+    </aura:if>
+	<lightning:layout multipleRows="true" class="slds-p-vertical_small">
+		<lightning:layoutItem size="12" class="slds-text-align_center">
+			<lightning:button label="Go to Case" onclick="{!c.handleClose}" />
+		</lightning:layoutItem>
+	</lightning:layout>
+</aura:component>

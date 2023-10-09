@@ -1,0 +1,25 @@
+<!--
+ - Created by Sean Wallace, Salesforce Developer, 
+ - Ad Victoriam Solutions on 9/11/19.
+ -->
+
+<aura:component description="setd_CaseProductLookup" implements="lightning:availableForFlowScreens" controller="setd_CaseProductLookup" access="global">
+    <aura:attribute name="defaultProductId" type="String"  />
+    <aura:attribute name="selectedProductId" type="String"  />
+    <aura:attribute name="parentProductId" type="String"  />
+    <aura:attribute name="products" type="List" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name="change" value="{!v.selectedProductId}" action="{!c.productSelected}" />
+    <aura:registerEvent name="caseProductUpdate" type="c:setd_CaseProductEvt"/>
+    <lightning:select class="slds-p-horizontal--xxx-small"
+                      aura:id="productSelect"
+                      name="productSelector"
+                      label="Product"
+                      required="true"
+                      value="{!v.selectedProductId}">
+        <option value=""> --None-- </option>
+        <aura:iteration items="{!v.products}" var="p">
+            <option value="{!p.Id}" selected="{!p.selected}">{!p.Name}</option>
+        </aura:iteration>
+    </lightning:select>
+</aura:component>

@@ -1,0 +1,8 @@
+<!--
+ - Created by Sean Wallace, Salesforce Developer, 
+ - Ad Victoriam Solutions on 9/12/19.
+ -->
+
+<aura:event type="APPLICATION" description="setd_CaseProductEvt">
+    <aura:attribute name="productId" type="String" /> 
+</aura:event>

@@ -1,0 +1,173 @@
+<!--
+ - Created by jeremyasmith on 2019-04-01.
+ -->
+
+<aura:component description="setd_ReturnToPort" controller="setd_ReturnToPortController" implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="caseInfo" type="Object" />
+    <aura:attribute name="case" type="Case" default="{'sObjectType':'Case'}" />
+    <aura:attribute name="user" type="User" default="{'sObjectType':'User'}" />
+    <aura:attribute name="returnToPorts" type="Object[]" />
+    <aura:attribute name="vehicleDeliveryStatuses" type="Object[]" />
+    <aura:attribute name="backhaulText" type="String" />
+
+    <aura:attribute name="radio1" type="String" default="Someone from the dealership will take the vehicle back to the port.  Please schedule an appointment and notify me as to when I should bring the vehicle to port." />
+    <aura:attribute name="radio2" type="String" default="Please set up a backhaul." />
+    <aura:attribute name="showBackhaul" type="Boolean" default="false" />
+
+    <!--<lightning:navigation aura:id="nav"/>-->
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="c-container">
+        <lightning:layout horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <div class="slds-text-heading_medium">Return to Port</div>
+        </lightning:layout>
+        <lightning:layout verticalAlign="start" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.CreatedDate}" type="date" label="Date of Request" required="true" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="small">
+                <lightning:select label="Which Port would you like to send the vehicle back to?" value="{!v.case.Return_to_Port__c}">
+                    <option value=""> -- Select Port -- </option>
+                    <aura:iteration items="{!v.returnToPorts}" var="item">
+                        <option value="{!item.value}" label="{!item.label}" />
+                    </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem class="slds-p-top--large slds-text-heading--small" size="12" flexibility="grow" padding="small">
+                How will the vehicle get back to port?
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="1" flexibility="no-grow" padding="medium">
+                <lightning:input aura:id="defaultRadio" type="radio" name="select" value="{!v.radio1}" label="" onchange="{!c.handleRadioClick}" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="11" flexibility="grow" padding="medium">
+                <lightning:formattedText value="{!v.radio1}" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="1" flexibility="no-grow" padding="medium">
+                <lightning:input type="radio" name="select" value="{!v.radio2}" label="" onchange="{!c.handleRadioClick}" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="11" flexibility="grow" padding="medium">
+                <lightning:formattedText value="{!v.radio2}" />
+            </lightning:layoutItem>
+
+            <!--<lightning:layoutItem class="slds-p-top&#45;&#45;small" size="2" flexibility="no-grow" padding="medium">-->
+                <!--<lightning:formattedText value="Please note:" />-->
+            <!--</lightning:layoutItem>-->
+            <aura:if isTrue="{!v.showBackhaul}">
+                <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                    <!--<lightning:formattedText value="If you chose a backhaul, the dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage. (If you've already setup backhaul, list the backhaul # below" />-->
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                            <lightning:icon iconName="utility:warning" />
+                        </span>
+                        <h2 class="slds-text-align--left">The dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage.</h2>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                    <lightning:input aura:Id="inpField" value="{!v.case.Backhaul_Date_Requested__c}" type="date" label="Date of backhaul request." required="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                    <lightning:input aura:Id="inpField" value="{!v.case.Backhaul_Confirmation_Number__c}" type="text" label="If you've already setup a backhaul, enter confirmation here:" />
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.SET_VIN__c}" type="text" label="VIN Number" required="true" onchange="{!c.handleVin}" /> <!--  -->
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Model_Number__c}" label="Model" required="true" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem class="slds-p-top--large slds-text-heading--small" size="12" flexibility="grow" padding="small">
+                Please list the accessories you would like installed by providing the name of the accessory and the applicable PIO code.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_1__c}" label="Accessory Name / PIO Code" type="text" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_2__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_3__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_4__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_5__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_6__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_7__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_8__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_9__c}" type="text" required="false" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--xxx-small" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" value="{!v.case.Accessory_and_Applicable_PIO_code_10__c}" type="text" required="false" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Name}" label="Dealer Name" required="true" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Dealer_Code__c}" label="Dealer Code" required="true" disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Contact Name" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.RTP_Contact_Phone__c}" label="Contact Phone Number" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <lightning:input aura:Id="inpField" type="text" value="{!v.case.Authorized_Name__c}" label="Authorized Name" required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="small">
+                <lightning:select label="Vehicle Delivery Status" value="{!v.case.Vehicle_Delivery_Status__c}" required="true">
+                    <option value=""> -- Select Delivery Status -- </option>
+                    <aura:iteration items="{!v.vehicleDeliveryStatuses}" var="item">
+                        <option value="{!item.value}" label="{!item.label}" />
+                    </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <!--<lightning:formattedText value="If you chose a backhaul, the dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage. (If you've already setup backhaul, list the backhaul # below" />-->
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+                            <lightning:icon iconName="utility:error" />
+                        </span>
+                    <h2 class="slds-text-align--left">To allow for a smooth and timely installation, please be sure that the interior of the vehicle does not contain any miscellaneous items.</h2>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                <!--<lightning:formattedText value="If you chose a backhaul, the dealership will be responsible for payment. The port facilities will not be responsible for any in transit damage. (If you've already setup backhaul, list the backhaul # below" />-->
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                            <lightning:icon iconName="utility:warning" />
+                        </span>
+                    <h2 class="slds-text-align--left">Note: Make sure to refer to your revised vehicle invoice for the most current and accurate pricing.  This is the ONLY source that will include updated pricing for accessories added or removed after wholesale.</h2>
+                </div>
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}" />
+                <lightning:button label="Submit" onclick="{!c.handleSubmit}" />
+                <lightning:button label="Print" onclick="{!c.handlePrint}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+
+    </div>
+
+</aura:component>

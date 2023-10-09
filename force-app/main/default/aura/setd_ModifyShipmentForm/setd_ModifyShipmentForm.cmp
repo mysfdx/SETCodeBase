@@ -1,0 +1,87 @@
+<aura:component description="setd_ModifyShipmentForm" controller="setd_ModifyShipmentRequestController">
+	<aura:attribute name="case" type="Case" />
+	<aura:attribute name="contact" type="Contact" />
+	<aura:attribute name="account" type="Account" />
+	<aura:attribute name="today" type="Date"/>
+	<aura:attribute name="shipmentActionHeader" type="String" />
+	<aura:attribute name="shipmentActions" type="Object[]" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-page-header">
+		<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+			<div class="slds-text-heading_medium">NV Stop/Modify Shipment Request</div>
+		</lightning:layout>
+		<lightning:layout class="slds-p-vertical_none">
+			<lightning:layoutItem class="slds-p-top_medium" flexibility="grow">
+				<div class="slds-text-body_regular">Use this form to notify the car carriers of stop shipments, limited delivery schedules and/or updates on deliver instructions.</div>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layoutItem class="slds-p-top_large slds-text-heading_small" size="12" flexibility="auto">
+			Contact Information
+		</lightning:layoutItem>
+		<lightning:layout verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Request Date" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Requester Name" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Requester Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="auto">
+				<lightning:input aura:Id="inputField" type="email" value="{!v.contact.Email}" label="Requester Email" disabled="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small slds-text-align_left" size="12" flexibility="auto">
+				<lightning:radioGroup aura:id="inputField" label="Select Shipment Action" options="{!v.shipmentActions}" value="{!v.case.Shipment_Action__c}" type="radio" onchange="{!c.handleShipmentAction}" required="true"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout horizontalAlign="center" class="slds-large-size--1-of-1 slds-p-top_large">
+			<aura:if isTrue="{!v.case.Shipment_Action__c}">
+				<lightning:card class="slds-size_1-of-1 slds-p-vertical_small" title="{!(v.shipmentActionHeader + ' Delivery Instructions')}">
+					<aura:if isTrue="{!v.case.Shipment_Action__c == 'DELIVERY_INSTRUCTIONS'}">
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="text" value="{!v.case.Dealer_Name_Update__c}" label="Dealer Name" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="text" value="{!v.case.Dealer_Code_Update__c}" label="Dealer Code" pattern="\d{1,5}" messageWhenPatternMismatch="Invalid dealer code number" required="true"  />
+						<lightning:textarea aura:Id="inputField" class="slds-p-horizontal_x-large" maxlength="255" value="{!v.case.Updated_Delivery_Address__c}" label="Updated Address (Street, City, State, and Zip Code)" required="true" />
+						<lightning:textarea aura:Id="inputField" class="slds-p-horizontal_x-large" maxlength="255" value="{!v.case.Updated_Delivery_Days_and_Timeframes__c}" label="Updated Delivery Days / Timeframes (i.e. M-F 8am-5pm, Sat 8am-3pm, Sun No Delivery)" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="text" value="{!v.case.Delivery_Contact_Name__c}" label="Contact Full Name" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="email" value="{!v.case.Delivery_Contact_Email__c}" label="Contact Email" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="tel" value="{!v.case.Delivery_Contact_Phone__c}" label="Contact Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="tel" value="{!v.case.Delivery_Contact_Alt_Phone__c}" label="Contact Alt Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" />
+					</aura:if>
+
+					<aura:if isTrue="{!v.case.Shipment_Action__c == 'HOLD_STOP'}">
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="date" value="{!v.case.Effective_Start_Date__c}" label="Effective Start Date" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="date" value="{!v.case.Effective_End_Date__c}" label="Effective End Date" min="{!v.case.Effective_Start_Date__c}" required="true" />
+						<lightning:textarea aura:Id="inputField" class="slds-p-horizontal_x-large" maxlength="255" value="{!v.case.Special_Instructions__c}" label="{!(v.shipmentActionHeader + ' Special Instructions')}" required="true" />
+					</aura:if>
+
+					<aura:if isTrue="{!v.case.Shipment_Action__c == 'LIMITED_DELIVERY'}">
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="date" value="{!v.case.Effective_Start_Date__c}" label="Effective Start Date" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="date" value="{!v.case.Effective_End_Date__c}" label="Effective End Date" min="{!v.case.Effective_Start_Date__c}" required="true" />
+						<lightning:input aura:Id="inputField" class="slds-p-horizontal_x-large" type="number" value="{!v.case.Accepted_Trucks_Loads_Per_Day__c}" label="How many trucks/loads will be accepted per day?" min="1" required="true" />
+						<lightning:textarea aura:Id="inputField" class="slds-p-horizontal_x-large" maxlength="255" value="{!v.case.Special_Instructions__c}" label="{!(v.shipmentActionHeader + ' Special Instructions')}" required="true" />
+					</aura:if>
+				</lightning:card>
+			</aura:if>
+		</lightning:layout>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="auto">
+				<lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+				<lightning:button label="Print" onclick="{!c.handlePrint}"/>
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

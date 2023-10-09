@@ -1,0 +1,130 @@
+<aura:component description="setd_IncentivesChallengeForm" controller="setd_IncentivesChallengeController">
+	<aura:attribute name="user" type="User"/>
+	<aura:attribute name="contact" type="Contact"/>
+	<aura:attribute name="case" type="Case"/>
+    <aura:attribute name="dupCases" type="Case"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="dupNoMatchFound" type="Boolean"/>
+	<aura:attribute name="challenges" type="Object[]"/>
+    <aura:attribute name="challengemonth" type="Object[]"/>
+    <aura:attribute name="challengeyear" type="Object[]"/>
+     <aura:attribute name="spinner" type="boolean" default="FALSE"/>
+	<aura:attribute name="requiredDocuments" type="String[]" default="[]"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+    <div class="slds-page-header">
+         <lightning:spinner aura:id="mySpinner" alternativeText="Processing.." title="Processing.." variant="brand" size="large" class="slds-hide"/>  
+        <lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <div class="slds-text-heading_medium">Incentives Challenge</div>
+        </lightning:layout>
+        <lightning:layout verticalAlign="start" multipleRows="true">
+            <lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+                <aura:if isTrue="{!not(empty(v.dupCases))}">
+                     <div Style="text-align : center"> <b><span style="color:Crimson">{!v.case.Challenge__c} request has already been submitted for this {!v.dupCases[0].SET_VIN__c} by following users,
+                         </span></b> </div>
+                    <lightning:datatable data="{!v.dupCases}" 
+                                         columns="{!v.columns }" 
+                                         keyField="Id"
+                                         hideCheckboxColumn="true"/>
+               </aura:if>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+                <lightning:select aura:Id="inputField" label="Challenge" value="{!v.case.Challenge__c}" onchange="{!c.handleRequiredDocuments}" required="true">
+					<option value="">-- Select a Challenge --</option>
+					<aura:iteration items="{!v.challenges}" var="item">
+						<option label="{!item.label}" value="{!item.value}" selected="{!item.value == v.case.Challenge__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.SET_VIN__c}" label="VIN Number" pattern="[a-zA-Z0-9]{17}" messageWhenPatternMismatch="Invalid VIN Number" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.Model_Number__c}" label="Model" pattern="\d{4}" messageWhenPatternMismatch="Please enter four digit value" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.Model_Year__c}" label="Model Year" pattern="\d{4}" messageWhenPatternMismatch="Please enter valid year with 4 digits"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="date" dateStyle="short" value="{!v.case.Retail_Date__c}" label="Retail Date" required="true" />
+			</lightning:layoutItem>
+            <aura:if isTrue="{!NOT(v.case.Challenge__c=='Presold')}">
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+                 <!--<lightning:helptext content="Please enter your last name" class="customIcon"/> -->
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.Contest_Number__c}" label="Contest #" required="false" />
+			</lightning:layoutItem>
+            </aura:if>
+            <aura:if isTrue="{!v.case.Challenge__c=='Presold'}">
+            <lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.SET_Customer_Last_Name__c}" label="Customer Last Name" required="true" />
+			</lightning:layoutItem>
+            </aura:if>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" disabled="true" label="Name" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input aura:Id="inputField" type="email" value="{!v.contact.Email}" label="Email Address" disabled="false" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:textarea maxlength="255" value="{!v.case.Reason_for_Challenge__c}" label="Reason for Challenge" />
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+				<lightning:input type="number" formatter="currency" value="{!v.case.Incentive_Amount__c}" label="Incentive Amount" />
+			</lightning:layoutItem>
+             <aura:if isTrue="{!v.case.Challenge__c=='NO_MATCH'}">
+            <lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:Id="inputField" label="Challenge Month" value="{!v.case.No_Match_Challenge_Month__c}" onchange="{!c.handleRequiredDocuments}" required="true">
+					<option value="">-- Select a Challange Month --</option>
+					<aura:iteration items="{!v.challengemonth}" var="item">
+						<option label="{!item.label}" value="{!item.value}" selected="{!item.value == v.case.No_Match_Challenge_Month__c}"/>
+					</aura:iteration>
+				</lightning:select>
+                </lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:Id="inputField" label="Challenge Year" value="{!v.case.No_Match_Challenge_Year__c}" onchange="{!c.handleRequiredDocuments}" required="true">
+					<option value="">-- Select a Challenge Year --</option>
+					<aura:iteration items="{!v.challengeyear}" var="item">
+						<option label="{!item.label}" value="{!item.value}" selected="{!item.value == v.case.No_Match_Challenge_Year__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+            </aura:if>
+</lightning:layout>
+            
+            
+		<lightning:layout verticalAlign="start" multipleRows="true">
+			<aura:if isTrue="{!not(empty(v.requiredDocuments))}">
+				<div class="slds-p-top_x-large">
+					<lightning:layoutItem class="slds-text-heading_small slds-text-title_bold" size="12" flexibility="grow" padding="medium">
+                        <aura:if isTrue="{!AND(not(empty(v.case.Challenge__c)),not(v.case.Challenge__c=='Presold'))}">
+                            Please attach the following documents:
+                        </aura:if>
+						
+					</lightning:layoutItem>
+					<lightning:layoutItem>
+						<ul class="slds-list_dotted">
+							<aura:iteration items="{!v.requiredDocuments}" var="item">
+								<li>{!item}</li>
+							</aura:iteration>
+						</ul>
+					</lightning:layoutItem>
+				</div>
+			</aura:if>
+		</lightning:layout>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow" padding="medium">
+				<lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+				<lightning:button label="Print" onclick="{!c.handlePrint}"/>
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

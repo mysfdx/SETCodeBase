@@ -1,0 +1,241 @@
+<!--
+Name:TransportClaimForm.cmp
+Purpose:Used to create user interface for Transportation Claim Form,ENHC0012574
+Author:Neha Agrawal
+Date:2/3/2021
+
+Change Log
+
+Date - Changed by - Change Description
+
+-->
+
+
+<aura:component controller="TranportationClaimController" implements="forceCommunity:availableForAllPageTypes,forceCommunity:themeLayout" access="global" >
+    <aura:attribute name="transportclaim" type="Transportation_Claim__c"/>
+    <aura:attribute name="account" type="Account"/>
+    <aura:attribute name="selectedRecordId" type="String"
+                    description="Used to store the selected record id.
+                                 While calling this component from other component,
+                                 set this attribute to the lookup field API name"/>
+    
+    <aura:attribute name="selecteddealerName" type="String"
+                    description="This is used to show the selected 
+                                 record Name in search input"/>
+    <aura:attribute name="proceedButtonDisabled" type="boolean" default="false"/>
+    <aura:attribute name="fileUploadDisabled" type="boolean" default="true"/>
+    <aura:attribute name="bolUploadCheck" type="boolean" default="false"/>
+    <aura:attribute name="imageUploadCheck" type="boolean" default="false"/>
+    <aura:attribute name="searchTextChanged" type="boolean" default="false"/>
+    <!--<aura:attribute name="roUploadCheck" type="boolean" default="false"/>-->
+    <aura:attribute name="tranportClaimId" type="id"/>
+    <aura:attribute name="vehicleTypeOptions" type="List" />
+    <aura:attribute name="deliveryTypeOptions" type="List"/>
+    <aura:attribute name="dealerCodeOptions" type="List" />
+    <aura:attribute name="carrierNameOptions" type="List"/>
+   
+    <aura:attribute name="accept" type="List" default="['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.jpg', '.jpeg', '.png']"/>
+    <aura:attribute name="notedOnBillOptions" type="List" default="[
+    {'label': 'Yes', 'value': 'Yes'},
+    {'label': 'No', 'value': 'No'}]"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <!--Declare Handlers-->
+    <!--<aura:handler name="lookupSelect" event="c:sObjectLookupSelectEvent" action="{!c.handleLookupEvent}"
+                  description="Event handler to get the selected record Id and Name from LookupItem component"/>-->
+    
+    <div class="slds-box" >
+        
+        <!-- Form Content of Steps STARTS -->
+        <div class="slds-p-around_large"> 
+            
+            <!-- All your Forms should be insde these respective sections -->
+            <div aura:id="stepOne">
+                <div class="content slds-align_absolute-center">
+                    <lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+                        <lightning:layoutItem class="slds-text-heading_large slds-text-align_center slds-size_1-of-1">
+                            <p class="Page-title" title="Damage">SET Transportation Damage Claim Form</p>
+                            <br/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem class="slds-text-align_left slds-text-color_default slds-size_1-of-1">
+                            <p class="Page-content">If damage is found during the inspection process and the Dealer 
+                                elects to keep the vehicle, please follow the steps below to receive approval for a Transportation Damage Claim: 
+                                <br/> 
+                                <br/>
+                                1.  If damage is detected during normal business hours, prior 
+                                to signing receipt of vehicles and while the Driver is still present, the Dealer should describe
+                                and notate the damage on the Bill of Lading or electronic Bill of Lading.
+                                <br/> 
+                                <br/>
+                                2.  If damage is found on the vehicles delivered after normal business hours, the Dealer
+                                has until the end of the next business day from the date of delivery to report the damage.
+                                <br/> 
+                                <br/>
+                                3.  Dealer must take pictures of the damage being described on the Bill of Lading.
+                                <br/> 
+                                <br/>
+                                4. Dealer must submit a Transportation Claim Salesforce Form (from Dealer Daily) the next
+                                business day from the date of delivery. The following documents will need to be uploaded:
+                                <br/> 
+                                <br/>
+                                
+                                &nbsp; &nbsp; a. Signed Bill of Lading with damage description <br/>
+                                &nbsp; &nbsp; b. Photos of Damage
+                                <br/> 
+                                <br/>
+                                5. Dealer will receive email notification of the claim status. If approved, Dealer will be
+                                asked to provide the Final Repair Order within 3 business days of approval notification. If extensive
+                                damage requires additional time to provide Final Repair Order, please contact <lightning:formattedEmail value="transportdamage@setoyota.com" hideIcon="true"/> 
+                                <br/> 
+                                <br/>
+                                6. The payment will be made based on the documentation submitted. Dealers should expect
+                                payment of approved repairs no later than the following months Parts Statement.
+                                
+                            </p> 
+                        </lightning:layoutItem>
+                        
+                        
+                    </lightning:layout>
+                </div>
+                <br/><br/>
+                <lightning:select 
+                      aura:id="inputField"
+                      name="dealerCodeSelector"
+                      label="Dealer Code"
+                      required="true"
+                      value="{!v.transportclaim.Dealer__c}"            
+                      >
+                    <aura:iteration items="{!v.dealerCodeOptions}" var="code">
+                        <option value="{!code.Id}" selected="{!code.selected}">{!code.Dealer_Code__c}</option>
+                    </aura:iteration>
+                </lightning:select>
+                    <br/><br/>
+                <!--<c:sObjectLookup fieldLabel = "Dealer" objectAPIName = "Account"
+                                 fieldAPIName = "Dealer_Code__c" subHeadingFieldsAPI = "Dealer_Code__c"
+                                 lookupIcon = "standard:account" placeholder = "Search Dealer" selectedRecordName="{!v.account.Name}"/>-->
+                <br/><br/>
+               
+                <lightning:button variant="brand" label="Next" title="Brand action" onclick="{!c.goToStepTwo}" />
+            </div>
+            
+            
+            <div aura:id="stepTwo">
+                <div class="content slds-align_left">
+                    <lightning:layoutItem class="slds-text-heading_medium slds-text-align_left slds-size_1-of-1">
+                        <p class="ContInfo" title="Damage">Contact Information</p>
+                        <hr style="height:5px;color:#D51E10;background-color:#D51E10"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-text-align_left slds-size_1-of-1">
+                        <!--<lightning:formattedText class="InputLabel" value="First Name and Last Name" />-->
+                        <lightning:input aura:Id="inputField" type="text" value="{!v.transportclaim.Contact_Name__c}" label="First Name and Last Name" required="true" />
+                        <br/>
+                        <lightning:input aura:Id="inputField" type="email" value="{!v.transportclaim.Contact_Email__c}" label="Email Address" required="true" />
+                        <br/>
+                        <lightning:input aura:Id="inputField" type="tel" value="{!v.transportclaim.Contact_Phone__c}" label="Phone Number" required="true" pattern="[0-9]{10}" messageWhenPatternMismatch="Please provide complete 10 digit phone number." />
+                    </lightning:layoutItem>
+                    <br/> <br/>
+                    <lightning:button label="Back" title="Neutral action" onclick="{!c.goBackToStepOne}"/>
+                    <lightning:button variant="brand" label="Next" title="Brand action" onclick="{!c.goToStepThree}" />
+                </div>
+                
+            </div>
+            
+            <div aura:id="stepThree">
+                <div class="content slds-align_left">
+                    <lightning:layoutItem class="slds-text-heading_medium slds-text-align_left slds-size_1-of-1">
+                        <p class="ContInfo" title="Damage">Damage Information</p>
+                        <hr style="height:5px;color:#D51E10;background-color:#D51E10"/>
+                        
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-text-align_left slds-size_1-of-1">
+                        <!--<lightning:formattedText class="InputLabel" value="First Name and Last Name" />-->
+                        <lightning:input aura:Id="inputField" 
+                                         type="text" 
+                                         value="{!v.transportclaim.VIN__c}" 
+                                         label="Vehicle Indentification Number (VIN)" 
+                                         pattern="[a-zA-Z0-9]{17}" 
+                                         messageWhenPatternMismatch="Please provide complete (17) number VIN" 
+                                         required="true" />
+                        <!--<br/>
+                        <lightning:radioGroup aura:Id="inputField" name="radioGroup1"
+                          label="Is this vehicle Retail or Fleet?"
+                          options="{!v.vehicleTypeOptions}"
+                          value="{!v.transportclaim.Vehicle_Type__c}"
+                          type="radio"/>-->
+                       
+                        <br/>
+                        <lightning:radioGroup aura:Id="inputField" name="radioGroup2"
+                          label="Carrier Name"
+                          options="{!v.carrierNameOptions}"
+                          value="{!v.transportclaim.Carrier_Name__c}"
+                          type="radio"
+                          required="true" />
+                        <br/>
+                        <lightning:input aura:Id="inputField" type="date" value="{!v.transportclaim.Date_of_Delivery__c}" label="Enter Date of Delivery"  required="true" />
+                        <br/>
+                        <lightning:radioGroup aura:Id="inputField" name="radioGroup3"
+                          label="Delivery Type"
+                          options="{!v.deliveryTypeOptions}"
+                          value="{!v.transportclaim.Delivery_Type__c}"
+                          type="radio"
+                          required="true" />
+                        <br/>
+                        <lightning:input aura:Id="inputField" type="time" value="{!v.transportclaim.Time_of_Delivery__c}" label="Time of Delivery"  required="true" />
+                        <br/>
+                        <lightning:radioGroup aura:Id="inputField" name="radioGroup4"
+                          label="Was Damage noted on Bill of Lading (BOL)?"
+                          options="{!v.notedOnBillOptions}"
+                          value="{!v.transportclaim.Noted_on_BOL__c}"
+                          type="radio"
+                          required="true" />
+                        <br/>
+                        <lightning:textarea aura:Id="inputField" label="Description of Damage" value="{!v.transportclaim.Damage_Description__c}" required="true" placeholder="type here..."/>
+                        <br/>
+                        <lightning:input aura:Id="inputField" type="number" value="{!v.transportclaim.Damage_Amount__c}" label="Damage Amount" formatter="currency"/>
+                        <br/>
+                        <lightning:radioGroup aura:Id="inputField" name="radioGroup5"
+                          label="Has Repair Order (RO) been uploaded?"
+                          options="{!v.notedOnBillOptions}"
+                          value="{!v.transportclaim.Has_RO_been_uploaded__c}"
+                          type="radio"
+                          required="true" />
+                        
+                    </lightning:layoutItem>
+                    <br/> <br/>
+                    <lightning:button label="Back" title="Neutral action" onclick="{!c.goBackToStepTwo}"/>
+                    <lightning:button variant="brand" label="Proceed" title="Proceed for File Upload" onclick="{!c.handleSubmit}" disabled="{!v.proceedButtonDisabled}" />
+                     <br/> <br/> <br/>
+                    <!--<aura:if isTrue="{!(empty(v.tranportClaimId))}">-->
+                        <p class="Page-content">Signed Bill of Lading (BOL)<span style="color: #D51E10">*</span></p>
+                        <lightning:layoutItem class="slds-text-body_regular slds-text-align_left slds-size_1-of-1">
+                             Please provide the signed BOL which shows the damage was documented.
+                            <lightning:fileUpload aura:id="BOLUploader" recordId="{!v.tranportClaimId}" title="To upload signed BOL, click this button" accept="{!v.accept}" multiple="false" disabled="{!v.fileUploadDisabled}" onuploadfinished="{!c.handleBOLUploadFinished}"/>
+                        </lightning:layoutItem>
+                          <br/>
+                         <p class="Page-content">Pictures of Damage<span style="color: #D51E10">*</span></p>
+                             <lightning:layoutItem class="slds-text-body_regular slds-text-align_left slds-size_1-of-1">
+                            Please provide pictures which help understand the damage the vehicle sustained.
+                         <lightning:fileUpload aura:id="ImageUploader" recordId="{!v.tranportClaimId}" title="To upload damage images, click this button" accept="{!v.accept}" multiple="true" disabled="{!v.fileUploadDisabled}" onuploadfinished="{!c.handleImageUploadFinished}" />
+                             </lightning:layoutItem>
+                            <br/>
+                            <p class="Page-content">Repair Order (RO) Estimate</p>
+                        <lightning:layoutItem class="slds-text-body_regular slds-text-align_left slds-size_1-of-1">
+                            Dealer has FIVE days after the claim is approved to submit the repair order.
+                            <lightning:fileUpload aura:id="ROUploader" recordId="{!v.tranportClaimId}" title="To upload RO estimate, click this button" accept="{!v.accept}" multiple="false" disabled="{!v.fileUploadDisabled}"/>
+                           </lightning:layoutItem>
+                        <br/> <br/>
+                        <lightning:layoutItem class="slds-text-align_center slds-size_1-of-1">
+                        <lightning:button variant="brand" 
+                                          label="Submit" 
+                                          title="Submit the form and go to record" 
+                                          onclick="{!c.handleFinalSubmit}" 
+                                          />
+                        </lightning:layoutItem>
+                    <!--</aura:if>-->
+                </div>
+            </div>
+   
+        </div>       
+        
+    </div>
+</aura:component>

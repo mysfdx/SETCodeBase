@@ -1,0 +1,9 @@
+/**
+ * Created by jeremyasmith on 2019-04-06.
+ */
+.THIS .green-check svg {
+    fill: limegreen;
+}
+.THIS .red-check svg {
+    fill: red;
+}

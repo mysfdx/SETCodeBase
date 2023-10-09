@@ -1,0 +1,31 @@
+<aura:component description="setd_IncentivesEnrollmentPayees">
+	<aura:attribute name="payee" type="Payee__c" required="true" />
+	<aura:attribute name="payeeTypes" type="Object[]" required="true" />
+
+	<lightning:card title="Payee">
+		<lightning:layout class="slds-grid slds-size--1-of-1 slds-p-top--none slds-grow slds-wrap" multipleRows="true">
+			<lightning:layoutItem class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2">
+				<lightning:select aura:id="inputField" value="{!v.payee.Payee_Type__c}" label="Payee Type" required="true">
+					<option label="-- Select One --" value=""/>
+					<aura:iteration items="{!v.payeeTypes}" var="item">
+						<option label="{!item.label}" value="{!item.label}" selected="{!item.label == v.payee.Payee_Type__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2">
+				<lightning:input aura:id="inputField" type="text" label="SPIN ID Number" value="{!v.payee.SPIN_ID__c}" pattern="\d{12}" messageWhenPatternMismatch="Must enter 12 numerical digits" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2">
+				<lightning:input aura:id="firstName" type="text" value="{!v.payee.First_Name__c}" label="First Name" onblur="{!c.handleFirstNameInput}" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2">
+				<lightning:input aura:id="lastName" type="text" value="{!v.payee.Last_Name__c}" label="Last Name" onblur="{!c.handleLastNameInput}" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2">
+				<lightning:input aura:id="inputField" type="number" formatter="percent-fixed" value="{!v.payee.Percentage__c}" label="Percentage" placeholder="0" min="0" max="100" required="true" />
+				<lightning:formattedText class="slds-text-body_small slds-text-color_weak" value="Note: Payee program percentages should not exceed 100%"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</lightning:card>
+
+</aura:component>

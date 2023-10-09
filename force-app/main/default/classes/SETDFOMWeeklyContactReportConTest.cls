@@ -1,0 +1,141 @@
+@isTest
+class SETDFOMWeeklyContactReportConTest
+{
+    static testMethod void testSETDFOMWeeklyContactReport()
+    {
+        Profile profile = [Select Id from Profile Where Name like 'SET%' limit 1];
+    
+        User userNew = new User();
+        userNew.FirstName = 'firstName1';
+        userNew.LastName = 'lastName1';
+        userNew.Alias = 'pTst1';
+        userNew.Username = userNew.Email = 'setEmail@testNew1.com';
+        userNew.EmailEncodingKey = 'UTF-8';
+        userNew.LanguageLocaleKey = 'en_US';
+        userNew.LocaleSidKey = 'en_US';
+        userNew.TimeZoneSidKey = 'America/Los_Angeles';
+        userNew.ProfileId = profile.Id;
+        userNew.SET_Area__c = 'A';
+        userNew.SET_District__c = '01';
+        
+        insert userNew;
+        
+        
+        User user = new User();
+        user.FirstName = 'firstName2';
+        user.LastName = 'lastName2';
+        user.Alias = 'pTst2';
+        user.Username = user.Email = 'setEmail1@testNew2.com';
+        user.EmailEncodingKey = 'UTF-8';
+        user.LanguageLocaleKey = 'en_US';
+        user.LocaleSidKey = 'en_US';
+        user.TimeZoneSidKey = 'America/Los_Angeles';
+        user.ProfileId = profile.Id;
+        user.SET_Area__c = 'B';
+        user.SET_District__c = '9';
+        
+        insert user;
+        
+        
+        User userThree = new User();
+        userThree.FirstName = 'firstName3';
+        userThree.LastName = 'lastName3';
+        userThree.Alias = 'pTst3';
+        userThree.Username = userThree.Email = 'setEmail@testNew3.com';
+        userThree.EmailEncodingKey = 'UTF-8';
+        userThree.LanguageLocaleKey = 'en_US';
+        userThree.LocaleSidKey = 'en_US';
+        userThree.TimeZoneSidKey = 'America/Los_Angeles';
+        userThree.ProfileId = profile.Id;
+        userThree.SET_Area__c = 'A';
+        userThree.SET_District__c = '06';
+        
+        insert userThree;                
+        
+        EmailTemplate template = [Select DeveloperName from EmailTemplate Limit 1];
+        
+        Send_Email_Info__c cmpcontEmail = new Send_Email_Info__c();
+        cmpcontEmail.Name = 'Competitive Contact Email Information';
+        cmpcontEmail.Email_template_to_use__c = template.DeveloperName;
+        insert cmpcontEmail;
+        
+        Send_Email_Info__c cmpcontEmail1 = new Send_Email_Info__c();
+        cmpcontEmail1.Name = 'Send Completion Email';
+        cmpcontEmail1.replace_field_in_template__c = '##TaskRecord##';
+        cmpcontEmail1.Email_template_to_use__c = template.DeveloperName;
+        cmpcontEmail1.Activity_Type__c = 'Collision Consult;DFOM Contact;eCommerce Parts;Parts Consult;PIPA;Svc Consult;Whls Consult;Tire Consult';
+        cmpcontEmail1.Group_Name__c = 'SET DPR;SET GME;SET GM CHANGES;SET OWNERSHIP CHANGES;SET Buy/Sell;SET Capital;SET Package Update;SET Performance;SET Facility';
+        insert cmpcontEmail1;
+        
+        SET_DFOM_Picklists__c set_Dfom_Picklists = new SET_DFOM_Picklists__c();
+        set_Dfom_Picklists.Name = 'SET Picklist Values';
+        set_Dfom_Picklists.Area_Picklist__c = 'A;B';
+        set_Dfom_Picklists.District_Picklist__c = '01;02;03;04;05;06;07;08;09;10;11;12;13;14';
+        set_Dfom_Picklists.Day_Picklist__c = 'Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+        insert set_Dfom_Picklists;
+        
+       // RecordType recordType = [Select Id from RecordType where name = 'SET_Task'];
+         string taskRecordTypeId = Schema.SObjectType.Task.getRecordTypeInfosByName().get('SET Task').getRecordTypeId(); 
+        Task taskOne = new Task();
+        taskOne.Subject = 'Call1';
+        taskOne.OwnerId = userNew.Id;
+        taskOne.Description = 'Test Description for task';
+        taskOne.SET_Date_of_Visit__c = Date.Today() + 1;
+        taskOne.Activity_Type__c = 'DFOM Contact';
+        taskOne.Status = 'Completed';
+        taskOne.RecordTypeId = taskRecordTypeId;
+        taskOne.Priority = 'Normal';
+        taskOne.Activity_Type_Sub_Category__c = 'Client Care Center';
+        taskOne.SET_SORT_DISTRICT__c = 1;
+        taskOne.SET_SORT_AREA__c = 'A';        
+        insert taskOne;
+        
+        Task taskTwo = new Task();
+        taskTwo.Subject = 'Call2';
+        taskTwo.OwnerId = user.Id;
+        taskTwo.Description = 'Test Description for task';
+        taskTwo.SET_Date_of_Visit__c = Date.Today() + 1;
+        taskTwo.Activity_Type__c = 'DFOM Contact';
+        taskTwo.Status = 'Completed';
+        taskTwo.RecordTypeId = taskRecordTypeId;
+        taskTwo.Priority = 'Normal';
+        taskTwo.Activity_Type_Sub_Category__c = 'Client Care Center';
+        taskTwo.SET_SORT_DISTRICT__c = 8;
+        taskTwo.SET_SORT_AREA__c = 'B';        
+        insert taskTwo;
+        
+        Task taskThree = new Task();
+        taskThree.Subject = 'Call3';
+        taskThree.OwnerId = userThree.Id;
+        taskThree.Description = 'Test Description for task';
+        taskThree.SET_Date_of_Visit__c = Date.Today() - 1;
+        taskThree.Activity_Type__c = 'Collision Consult';
+        taskThree.Status = 'Completed';
+        taskThree.RecordTypeId = taskRecordTypeId;
+        taskThree.Priority = 'Normal';
+        taskThree.Activity_Type_Sub_Category__c = 'eCommerce Parts';
+        taskThree.SET_SORT_DISTRICT__c = 10;
+        taskThree.SET_SORT_AREA__c = 'B';        
+        insert taskThree;
+                
+        
+        system.debug('taskOne===='+taskOne);
+        
+        SETDFOMWeeklyContactReportCon firstSETDFOMWeeklyContactReportCon = new SETDFOMWeeklyContactReportCon();
+        /*firstSETDFOMWeeklyContactReportCon.StrArea = 'A';
+        firstSETDFOMWeeklyContactReportCon.StrActivity = 'Svc Misc';
+        firstSETDFOMWeeklyContactReportCon.StrDistrict = '01';
+        firstSETDFOMWeeklyContactReportCon.StrDay = '--None--';*/ 
+        firstSETDFOMWeeklyContactReportCon.NewTask.SET_Date_of_Visit__c = Date.Today();
+        firstSETDFOMWeeklyContactReportCon.secondTask.SET_Date_of_Visit__c = Date.today() + 2;
+        firstSETDFOMWeeklyContactReportCon.fetchActivity();
+        system.debug('firstSETDFOMWeeklyContactReportCon.secondTask.SET_Date_of_Visit__c===='+firstSETDFOMWeeklyContactReportCon.secondTask.SET_Date_of_Visit__c);
+        system.debug('firstSETDFOMWeeklyContactReportCon.NewTask.SET_Date_of_Visit__c===='+firstSETDFOMWeeklyContactReportCon.NewTask.SET_Date_of_Visit__c);
+        firstSETDFOMWeeklyContactReportCon.exportXls();
+        firstSETDFOMWeeklyContactReportCon.getActivityOptions();
+        firstSETDFOMWeeklyContactReportCon.getLstArea();
+        firstSETDFOMWeeklyContactReportCon.getLstDistrict();
+        firstSETDFOMWeeklyContactReportCon.getLstDay();
+        firstSETDFOMWeeklyContactReportCon.getSubcategoryOptions();
+    }
+}

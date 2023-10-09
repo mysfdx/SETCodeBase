@@ -1,0 +1,79 @@
+<aura:component description="DAPChallengeVinCollectionInput">
+	<aura:attribute name="inputVin" type="Object" />
+	<aura:attribute name="validVin" type="Boolean" default="false" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:handler name="change" value="{!v.inputVin}" action="{!c.handleInputChange}" />
+	<aura:registerEvent name="vinInputEvent" type="c:DAPChallengeVinInputEvent" />
+
+	<lightning:layout class="slds-size_1-of-1" multipleRows="false">
+		<div style="width: 15%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>VIN<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<div>Model Number<abbr class="slds-required" title="required">*</abbr></div>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 20%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Customer Name"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width:20%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Lease Co. Name"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Retail Date"/>
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem class="slds-text-align_center slds-box_border slds-color__background_gray-3">
+				<lightning:formattedText value="Process Date"/>
+			</lightning:layoutItem>
+		</div>
+		<div>
+			<lightning:layoutItem />
+		</div>
+	</lightning:layout>
+	<lightning:layout class="slds-size_1-of-1" multipleRows="false">
+		<div style="width: 15%">
+			<lightning:layoutItem>
+				<lightning:input aura:Id="vin" type="text" label="VIN" value="{!v.inputVin.Name}" pattern="[a-zA-Z0-9]{17}" messageWhenPatternMismatch="Invalid VIN Number" variant="label-hidden" onchange="{!c.handleVinInput}" />
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem>
+				<lightning:input aura:Id="modelNumber" type="text" label="Model Number" value="{!v.inputVin.Model_Number__c}" pattern="\d{4}" messageWhenPatternMismatch="Please enter four digit value" variant="label-hidden" onchange="{!c.handleModelInput}" />
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 20%">
+			<lightning:layoutItem>
+				<lightning:input type="text" label="Customer Name" value="{!v.inputVin.Customer_Name__c}" variant="label-hidden" />
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 20%">
+			<lightning:layoutItem>
+				<lightning:input type="text" label="Lease Co. Name" value="{!v.inputVin.Lease_Co_Name__c}" variant="label-hidden" />
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem>
+				<lightning:input type="date" label="Retail Date" value="{!v.inputVin.Retail_Date__c}" variant="label-hidden" />
+			</lightning:layoutItem>
+		</div>
+		<div style="width: 13%">
+			<lightning:layoutItem>
+				<lightning:input type="date" label="Process Date" value="{!v.inputVin.Process_Date__c}" variant="label-hidden" />
+			</lightning:layoutItem>
+		</div>
+	</lightning:layout>
+	<lightning:layoutItem class="slds-text-align_left slds-p-vertical_x-small" flexibility="auto">
+		<lightning:button label="Add Vehicle" onclick="{!c.handleAddVin}" disabled="{!not(v.validVin)}" />
+	</lightning:layoutItem>
+</aura:component>

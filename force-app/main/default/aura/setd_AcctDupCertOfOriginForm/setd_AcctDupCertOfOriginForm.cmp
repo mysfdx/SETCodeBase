@@ -1,0 +1,148 @@
+<aura:component description="setd_AcctDupCertOfOriginForm" controller="setd_AcctDupCertOfOriginController">
+	<aura:attribute name="case" type="Case" />
+	<aura:attribute name="user" type="User" />
+	<aura:attribute name="contact" type="Contact" />
+	<aura:attribute name="account" type="Account" />
+	<aura:attribute name="today" type="Account" />
+	<aura:attribute name="reasonForDuplicates" type="Object[]" />
+	<aura:attribute name="titledVehicleYesLabel" type="String" />
+	<aura:attribute name="titledVehicleNoLabel" type="String" />
+	<aura:attribute name="pendingPrint" type="Boolean" default="true"/>
+	<aura:attribute name="modelYears" type="List"/>
+	<aura:attribute name="selectedOther" type="Boolean" default="false"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-page-header">
+		<lightning:layout class="slds-p-top_medium slds-p-bottom_small slds-text-align_center slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+			<lightning:layoutItem class="slds-text-heading_medium slds-size_1-of-1">
+				REQUEST FOR DUPLICATE CERTIFICATE OF ORIGIN
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-text-body_small slds-size_1-of-1 slds-text-color_weak">
+				Note: Only the ORIGINAL invoiced Dealership may apply for a Duplicate MSO
+			</lightning:layoutItem>
+		</lightning:layout>
+		<lightning:layout class="slds-p-vertical_x-small">
+			<lightning:layoutItem class="slds-text-body_small">
+				Questions:   <br/>
+				Call Aracelis Ramirez at 954-429-2017 or email at setaccounting@jmfamily.com
+				<br/>
+			</lightning:layoutItem>
+		</lightning:layout>
+		<lightning:layout class="slds-p-vertical_x-small slds-border_bottom" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Request Date" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Requester Name" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Requester Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="email" value="{!v.contact.Email}" label="Requester Email" disabled="true"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_x-small slds-border_bottom" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.SET_VIN__c}" label="Serial Number (VIN)" pattern="[a-zA-Z0-9]{17}" messageWhenPatternMismatch="Invalid VIN Number" onchange="{!c.handleVINInput}" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.Model_Number__c}" label="Model Number" pattern="\d{4}" messageWhenPatternMismatch="Please enter four digit value" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-bottom_x-small" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:Id="inputField" label="Model Year" value="{!v.case.Model_Year__c}" required="true">
+					<option value="">-- Select Year --</option>
+					<aura:iteration items="{!v.modelYears}" var="yearValue">
+						<option value="{!yearValue}" label="{!yearValue}"  selected="{!yearValue == v.case.Model_Year__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_x-small slds-border_bottom" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-text-body_regular" size="12" flexibility="grow" padding="small">
+				A duplicate of the original certificate of origin is required for the following reason:
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-text-align_left">
+				<lightning:radioGroup aura:id="inputField" type="radio" options="{!v.reasonForDuplicates}" value="{!v.case.Reason_for_Duplicate__c}" variant="label-hidden" required="true" onchange="{!c.handleDuplicateReason}"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="" size="12" flexibility="grow" padding="medium">
+				<lightning:textarea aura:Id="inputField" maxlength="255" value="{!v.case.Other__c}" label="Comments (Explain below and attach original if applicable)" required="{!v.selectedOther}" disabled="{!not(v.selectedOther)}" />
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_x-small slds-border_bottom" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-text-body_regular" size="12" flexibility="grow" padding="small">
+				Has the vehicle ever been titled?
+			</lightning:layoutItem>
+			<lightning:formattedText aura:id="titledVehicleError" class="error-text" value="Complete this field." />
+			<lightning:layout multipleRows="true">
+				<lightning:layoutItem size="12">
+					<ui:inputRadio aura:Id="titledVehicleNo" name="titledOptions" change="{!c.handleNoTitledVehicle}" required="true"/>
+					<lightning:formattedText class="slds-text-color_weak slds-p-left_small" value="{!v.titledVehicleNoLabel}" />
+				</lightning:layoutItem>
+				<lightning:layoutItem size="12">
+					<ui:inputRadio aura:Id="titledVehicleYes" name="titledOptions" change="{!c.handleYesTitledVehicle}" required="true"/>
+					<lightning:formattedText class="slds-text-color_weak slds-text-title_bold slds-p-left_small" value="{!v.titledVehicleYesLabel}" />
+				</lightning:layoutItem>
+			</lightning:layout>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_x-small slds-border_bottom slds-size_1-of-1" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem>
+				<div class="slds-text-heading_small slds-text-align_center slds-p-bottom_small" style="text-transform: uppercase">
+					Affirmation
+				</div>
+				<div class="slds-p-bottom_small slds-text-body_regular">
+					The facts stated herein are within my personal knowledge, are based upon the investigation or inquiry performed by myself or others on my behalf, and are true to the best of my knowledge.
+					In the event that the original Certificate of Origin is found, I agree to return it to Southeast Toyota Distributors, LLC.
+				</div>
+				<div class="slds-text-body_regular">
+					The requesting Dealership agrees to indemnify Southeast Toyota Distributors, LLC, and hold it harmless from any suit, action, proceeding, or claim of any kind brought or initiated as a result of the issuance of a duplicate Certificate of Origin.
+				</div>
+			</lightning:layoutItem>
+
+			<lightning:layout class="slds-size_1-of-1 slds-p-bottom_small" horizontalAlign="center">
+				<lightning:layoutItem padding="horizontal-small" size="5">
+					<lightning:input aura:Id="officerName" type="text" value="{!v.case.Officers_Name__c}" placeholder="Authorized Officer's Name"/>
+					<lightning:formattedText aura:id="officerNameError" class="error-text" value="Complete this field." />
+					<lightning:input type="date" value="{!v.today}" disabled="true"/>
+				</lightning:layoutItem>
+				<lightning:layoutItem padding="horizontal-small" size="5">
+					<lightning:input aura:Id="officerTitle" type="text" value="{!v.case.Officers_Title__c}" placeholder="Title"/>
+					<lightning:formattedText aura:id="officerTitleError" class="error-text" value="Complete this field." />
+					<lightning:input type="text" value="{!v.account.Name}" disabled="true"/>
+				</lightning:layoutItem>
+			</lightning:layout>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-top_small slds-text-align_left" multipleRows="false">
+			<lightning:layoutItem>
+				<ui:inputCheckbox aura:Id="signature"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-left_x-small">
+				<lightning:formattedText value="Dealer Signature" />
+			</lightning:layoutItem>
+		</lightning:layout>
+		<lightning:layoutItem class="slds-text-color_weak">
+			You must be listed as an authorized signer for your dealership in order to submit this form. Forms submitted by non-authorized personnel cannot be accepted by Southeast Toyota.
+		</lightning:layoutItem>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow" padding="medium">
+				<lightning:button class="slds-button slds-button_destructive" label="Clear Form" onclick="{!c.handleClear}" />
+				<lightning:button label="Print" onclick="{!c.handlePrint}" />
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}" />
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

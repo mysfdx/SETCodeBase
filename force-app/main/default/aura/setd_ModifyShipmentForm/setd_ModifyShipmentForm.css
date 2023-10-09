@@ -1,0 +1,9 @@
+.THIS .error-text {
+	display:none;
+}
+
+.THIS .errorShow {
+	display:flex;
+	color:rgb(194, 57, 52);
+    font-size: 12px;
+}

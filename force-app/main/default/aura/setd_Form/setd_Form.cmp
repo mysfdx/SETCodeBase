@@ -1,0 +1,57 @@
+<aura:component description="setd_Form" access="global" implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" controller="setd_FormController">
+	<aura:attribute name="formType" type="String" required="true" />
+	<aura:attribute name="validatingForm" type="Boolean" default="false" />
+    <aura:attribute name="parentCaseId" type="String" />
+    <aura:attribute name="parentCaseNumber" type="String" />
+	<aura:handler name="formSubmission" event="c:FormSubmissionEvent" action="{!c.handleFormSubmission}" />
+
+	<aura:if isTrue="{!v.validatingForm}">
+		<lightning:spinner aura:id="spinner" size="large" alternativeText="Loading..." />
+	</aura:if>
+
+	<aura:if isTrue="{!v.formType == 'Incentives Challenge'}">
+		<c:setd_IncentivesChallengeForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'INC Enrollment'}">
+		<c:setd_EnrollmentForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'Return to Port'}">
+		<c:setd_ReturnToPortForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'ACCT ACH PTS AUTHORIZE'}" >
+		<c:setd_AcctAchPtsAuthorizeForm caseId="{!v.parentCaseId}" caseNumber="{!v.parentCaseNumber}"/>
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'ACCT ACH PTS TERMS/INS'}">
+		<c:setd_AcctAchPtsTermsForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'Appeals'}">
+		<c:setd_AppealsForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'NV Monroney Label Req'}">
+		<c:setd_MonroneyLabelRequestForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'NV Stop Shipment Req'}">
+		<c:setd_ModifyShipmentForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'TRAC Vehicle Req'}">
+		<c:setd_VehicleRequestForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'ACCT Dup C of O'}">
+		<c:setd_AcctDupCertOfOriginForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'INC ACH Statement'}">
+		<c:setd_IncAchTermsInstrForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'INC ACH Authorization'}">
+		<c:setd_IncAchAuthorizationForm caseId="{!v.parentCaseId}" caseNumber="{!v.parentCaseNumber}"/>
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'SET MCB Challenge'}">
+		<c:setd_MCBChallengeForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'DAP Challenge by VIN'}">
+		<c:setd_DAPChallengeVINForm />
+	</aura:if>
+	<aura:if isTrue="{!v.formType == 'DAP Challenge by Month'}">
+		<c:setd_DAPChallengeMonthForm />
+	</aura:if>
+</aura:component>

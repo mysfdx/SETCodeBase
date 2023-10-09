@@ -1,0 +1,7 @@
+<design:component label="decodedFeedbackForm">
+    
+     <design:attribute name="encodedFeedback" label="Encoded Feedback Form Name" />
+    <design:attribute name="decodedFeedback" label="Decoded Feedback Form Name" />
+    <design:attribute name="booleanFeedback" label="Feedback Form True or False" />
+	
+</design:component>

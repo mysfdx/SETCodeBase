@@ -1,0 +1,111 @@
+<!--
+ - Created by jeremyasmith on 2019-04-07.
+ -->
+
+<aura:component description="setd_AcctAchPtsTermsIns" controller="setd_AcctAchPtsTermsInsController" implements="forceCommunity:themeLayout,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="case" type="Case" default="{'sObjectType':'Case'}" />
+    <aura:attribute name="user" type="User" default="{'sObjectType':'User'}" />
+    <aura:attribute name="caseInfo" type="Object"/>
+    <aura:attribute name="picklists" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="c-container">
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+            <lightning:layoutItem class="slds-align--absolute-center slds-text-heading_medium">
+                ACCT ACH PTS TERMS/INS
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout class="slds-size--1-of-1 slds-p-top--medium" horizontalAlign="center" multipleRows="true">
+            <lightning:layoutItem class="slds-size--1-of-1 slds-align--absolute-center slds-text-heading--small">
+                SET ACH PARTS STATEMENT
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-align--absolute-center slds-text-heading--small">
+                TERMS AND INSTRUCTIONS FORM
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <hr />
+
+        <lightning:layout class="slds-size--1-of-1" multipleRows="true">
+            <lightning:layoutItem class="slds-size--1-of-1" flexibility="grow" padding="medium">
+                The program terms are:
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small slds-p-left--medium" flexibility="grow" padding="medium">
+                1.  The dealer Parts Statement and TRAC billing statements will be transmitted to your store on the 2nd or 3rd working day
+                of the month via the Dealer Information System and available on SET Dealer Daily under archived DCS Reports areas.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small slds-p-left--medium" flexibility="grow" padding="medium">
+                2.  The date for your ACH Parts Statement is the 15th of each month.  If the 15th falls on a weekend or holiday, the payment
+                date will be the next business day.  On that date, your bank account will be automatically debited or credited for the balance due.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--small slds-p-left--medium" flexibility="grow" padding="medium">
+                3.  If you find an error on your statement, you can contact SET accounting up to the tenth day of each month for a correction of the ACH
+                transfer amount.  Deductions for amounts determined to be billed in error by SET will not incur interest or late charges.
+                In the event that a billing error or problem occurs that is not corrected before the funds transfer, SET will compensate you for the overpayment.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" flexibility="grow" padding="medium">
+                SET must receive the attached Electronic Transfer Authorization Form completed and signed by an authorized representative.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" flexibility="grow" padding="medium">
+                The ACH Parts Program Eletronic Authorization Form is available here.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" flexibility="grow" padding="medium">
+                A voided check or debit advice with your account number encoded must be included to verify the accuracy of routing and account numbers.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" flexibility="grow" padding="medium">
+                Please send the Electronic Transfer Authorization Form, along with a voided check or debit advice, to the Southeast Toyota Accounting
+                Department, attention: Jeff Newman. Be sure to send a copy of pre-notification letter to your bank officer.
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-p-top--medium" flexibility="grow" padding="medium">
+                If you have any questions regarding the ACH transfers after the initial set-up, please call Jeff Newman at 954-429-2068.
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout class="slds-p-top--medium" multipleRows="true">
+            <lightning:layoutItem class="slds-align--absolute-center slds-text-heading--small">
+                ACKNOWLEDGEMENT OF RECEIPT AND AGREEMENT TO ACH PROGRAM TERMS AND INSTRUCTIONS:
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout verticalAlign="start" class="slds-size--1-of-1" horizontalAlign="space" pullToBoundary="small" multipleRows="true">
+                    <lightning:layoutItem class="slds-p-top--xx-large" flexibility="grow" padding="medium">
+                        <br /><br />
+                        <lightning:formattedText class="slds-wrap slds-p-right--large signature" value="Signature of Dealer Owner General Manager" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem flexibility="grow" padding="medium">
+                        <lightning:formattedText class="slds-wrap slds-p-right--large slds-p-bottom--x-large" value="named in Dealer Agreement" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="text" value="{!v.case.SET_Representative__c}" label="SET Representative" required="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-col slds-size--1-of-2">
+                <lightning:layout class="slds-size--1-of-1" verticalAlign="start" horizontalAlign="space" multipleRows="true">
+                    <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Name}" label="Dealer Name" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-p-top--medium" size="12" flexibility="grow" padding="medium">
+                        <lightning:input aura:Id="inpField" type="text" value="{!v.caseInfo.account.Dealer_Code__c}" label="Dealer Code" required="true" disabled="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <lightning:layout horizontalAlign="center" pullToBoundary="small">
+            <lightning:layoutItem class="slds-p-top--large" size="12" flexibility="grow" padding="medium">
+                <lightning:button label="Clear Form" onclick="{!c.handleClear}"/>
+                <lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+                <lightning:button label="Print" onclick="{!c.handlePrint}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+    </div>
+
+</aura:component>

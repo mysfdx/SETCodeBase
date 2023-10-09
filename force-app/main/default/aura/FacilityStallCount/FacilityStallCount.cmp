@@ -1,0 +1,127 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                Controller="FacilityStallCountController" access="global">
+    <aura:attribute name="FacilityList" type="List"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div  style="width:40%">
+   <!--<div class="slds-grid slds-gutters">
+       <div class="slds-col slds-size_1-of-3">-->
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered 
+                  slds-table_col-bordered slds-table_resizable-cols" 
+           aria-label="Example table of Opportunities with vertical borders">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Stalls Audit Totals">
+                        Stalls Audit Totals</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Lift">Lift</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Flat">Flat</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Alignment">Alignment</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Detail">Detail</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Car Wash">Car Wash</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Photobooth">Photobooth</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="slds-hint-parent">
+                <th data-label="Stalls Audit Total" scope="row">
+                    <div class="slds-truncate" title="Stalls Audit Total">
+                       {!v.FacilityList[0].StallTotal}
+                    </div>
+                </th>
+                <td data-label="Lift">
+                    <div class="slds-truncate" title="Lift"> 
+                        {!v.FacilityList[0].Lifts} </div>
+                </td>
+                <td data-label="Flat">
+                    <div class="slds-truncate" title="Flat">
+                        {!v.FacilityList[0].Flats}
+                    </div>
+                </td>
+                <td data-label="Alignment">
+                    <div class="slds-truncate" title="Alignment">
+                        {!v.FacilityList[0].Alignment}
+                    </div>
+                </td>
+                <td data-label="Detail">
+                    <div class="slds-truncate" title="Detail">
+                        {!v.FacilityList[0].Detail}
+                    </div>
+                </td>
+                <td data-label="Car Wash">
+                    <div class="slds-truncate" title="Car Wash">
+                        {!v.FacilityList[0].CarWash}
+                    </div>
+                </td>
+                <td data-label="Photobooth">
+                    <div class="slds-truncate" title="Photobooth">
+                       {!v.FacilityList[0].Photobooth}
+                    </div>
+                </td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <th data-label="Stalls Audit Total" scope="row">
+                    <div class="slds-truncate" title="Stalls Audit Total">
+                        
+                        {!v.FacilityList[1].StallTotal}%
+                    </div>
+                </th>
+                <td data-label="Lift">
+                    <div class="slds-truncate" title="Lift">
+                        {!v.FacilityList[1].Lifts}%
+                    </div>
+                </td>
+                <td data-label="Flat">
+                    <div class="slds-truncate" title="Flat">
+                        {!v.FacilityList[1].Flats}%
+                    </div>
+                </td>
+                <td data-label="Alignment">
+                    <div class="slds-truncate" title="Alignment">
+                         {!v.FacilityList[1].Alignment}%
+                    </div>
+                </td>
+                <td data-label="Detail">
+                    <div class="slds-truncate" title="Detail">
+                          {!v.FacilityList[1].Detail}%
+                    </div>
+                </td>
+                <td data-label="Car Wash">
+                    <div class="slds-truncate" title="Car Wash">
+                        {!v.FacilityList[1].CarWash}%
+                    </div>
+                </td>
+                <td data-label="Photobooth">
+                    <div class="slds-truncate" title="Photobooth">
+                        
+                    </div>
+                </td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <div class="slds-truncate">
+                        <a href="https://set.lightning.force.com/lightning/r/Report/00O8Y000008deIsUAI/view" 
+           tabindex="-1" target= "_blank">Report - SET Stall Audit Report</a>
+                    </div>
+            
+            </tr>
+        </tbody>
+        
+    </table>
+        
+    <!--</div>
+    </div>-->
+    </div>
+</aura:component>

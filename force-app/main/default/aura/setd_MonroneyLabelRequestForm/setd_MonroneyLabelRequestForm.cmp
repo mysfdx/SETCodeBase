@@ -1,0 +1,121 @@
+<aura:component description="setd_MonroneyLabelRequestForm" controller="setd_MonroneyLabelRequestController">
+	<aura:attribute name="case" type="Case" />
+	<aura:attribute name="account" type="Account" />
+	<aura:attribute name="contact" type="Contact" />
+	<aura:attribute name="today" type="Date" />
+	<aura:attribute name="vins" type="String[]" />
+	<aura:attribute name="vinDataEntries" type="Object[]" default="[]" />
+	<aura:attribute name="vinDatatableColumns" type="List" />
+	<aura:attribute name="inputVIN" type="String" />
+	<aura:attribute name="isValidVin" type="Boolean" default="false" />
+	<aura:attribute name="shippingOptions" type="Object[]" />
+	<aura:attribute name="reasonRequests" type="Object[]" />
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:handler name="change" value="{!v.vins}" action="{!c.updateVinTable}" />
+	<aura:registerEvent name="formSubmission" type="c:FormSubmissionEvent"/>
+
+	<div class="slds-page-header">
+		<lightning:layout class="slds-p-vertical_medium slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+			<div class="slds-text-heading_medium">Monroney Label Request Form</div>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_none">
+			<lightning:layoutItem class="slds-p-top_medium" flexibility="grow">
+				<lightning:formattedText class="slds-text-heading_small" value="Welcome to Southeast Toyota Monroney Label request form."/>
+				<div class="slds-text-body_regular">The form will allow you to request a monroney label by completing this form. Please fill in the form as complete as possible to expedite your request.</div>
+				<div class="slds-text-body_small slds-p-top_small">(<b>Note:</b> A $3.00 per monroney label will be charged to your parts account)</div>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<lightning:layout class="slds-p-vertical_small slds-border_bottom" verticalAlign="start" multipleRows="true">
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="date" value="{!v.today}" label="Request Date" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.account.Name}" label="Dealer Name" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.contact.Current_Dealer_Code__c}" label="Dealer Code" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="text" value="{!v.case.RTP_Contact_Name__c}" label="Requester Name" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="tel" value="{!v.case.RTP_Contact_Phone__c}" label="Requester Phone" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number" required="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+				<lightning:input aura:Id="inputField" type="email" value="{!v.contact.Email}" label="Requester Email" disabled="true"/>
+			</lightning:layoutItem>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:Id="inputField" label="Preferred Shipping" value="{!v.case.Preferred_Shipping__c}" required="true" onchange="{!c.resetShippingInfo}">
+					<option value="">-- Select One --</option>
+					<aura:iteration items="{!v.shippingOptions}" var="item">
+						<option value="{!item.value}" label="{!item.label}"  selected="{!item.value == v.case.Preferred_Shipping__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+			<aura:if isTrue="{!v.case.Preferred_Shipping__c == 'FAX'}">
+				<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+					<lightning:input aura:Id="inputField" type="text" value="{!v.case.Fax_Number__c}" label="Fax Number" required="{!v.case.Preferred_Shipping__c == 'FAX'}" pattern="\d{10}" messageWhenPatternMismatch="Enter valid 10 digit phone number"/>
+				</lightning:layoutItem>
+			</aura:if>
+			<aura:if isTrue="{!v.case.Preferred_Shipping__c == 'FEDEX'}">
+				<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow">
+					<lightning:input aura:Id="inputField" type="text" value="{!v.case.FedEx_Number__c}" label="FedEx Number" required="{!v.case.Preferred_Shipping__c == 'FEDEX'}"/>
+				</lightning:layoutItem>
+			</aura:if>
+			<lightning:layoutItem class="slds-p-top_medium" size="12" flexibility="grow" padding="small">
+				<lightning:select aura:Id="inputField" label="Reason for Request" value="{!v.case.Reason_for_Request__c}" required="true">
+					<option value="">-- Select One --</option>
+					<aura:iteration items="{!v.reasonRequests}" var="item">
+						<option value="{!item.value}" label="{!item.label}"  selected="{!item.value == v.case.Reason_for_Request__c}"/>
+					</aura:iteration>
+				</lightning:select>
+			</lightning:layoutItem>
+		</lightning:layout>
+
+		<div class="slds-p-vertical_medium">
+			<lightning:formattedText class="slds-large-size--1-of-1 slds-text-heading_small" value="Vehicle Information" />
+			<div class="slds-text-body_small slds-text-color_weak">(a minimum of one VIN is required for the request)</div>
+		</div>
+		<lightning:layout horizontalAlign="spread">
+			<div class="slds-large-size--3-of-7">
+				<lightning:layout verticalAlign="start" multipleRows="true">
+					<lightning:layoutItem size="10">
+						<lightning:input aura:Id="vinInput" type="text" value="{!v.inputVIN}" label="Enter VIN Number" pattern="[a-zA-Z0-9]{17}" messageWhenPatternMismatch="Invalid VIN Number" onchange="{!c.validateVIN}" />
+					</lightning:layoutItem>
+					<lightning:layoutItem class="slds-p-vertical_xx-small" size="10">
+						<lightning:button label="Add" onclick="{!c.addVin}" disabled="{!not(v.isValidVin)}" />
+					</lightning:layoutItem>
+				</lightning:layout>
+			</div>
+			<div class="slds-large-size--4-of-7 slds-p-horizontal_large">
+				<lightning:layout verticalAlign="start" multipleRows="true">
+					<lightning:layoutItem size="12">
+						<aura:if isTrue="{!empty(v.vinDataEntries)}">
+							<lightning:formattedText class="slds-text-color_error" value="No VIN Numbers Entered" />
+							<aura:set attribute="else">
+								<div class="slds-box_border" style="padding-left: 10px; padding-right: 10px; height: 200px">
+									<lightning:datatable keyField="id" data="{!v.vinDataEntries}" columns="{!v.vinDatatableColumns}" hideCheckboxColumn="true" onrowaction="{!c.removeVIN}" />
+								</div>
+							</aura:set>
+						</aura:if>
+					</lightning:layoutItem>
+				</lightning:layout>
+			</div>
+		</lightning:layout>
+
+		<lightning:layoutItem class="slds-p-top_small" size="12" flexibility="grow" padding="medium">
+			<lightning:textarea maxlength="255" value="{!v.case.Comments__c}" label="Additional Comments"/>
+		</lightning:layoutItem>
+
+		<lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+			<lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="grow">
+				<lightning:button label="Clear Form" onclick="{!c.handleClear}" class="slds-button slds-button_destructive"/>
+				<lightning:button label="Print" onclick="{!c.handlePrint}"/>
+				<lightning:button label="Submit" onclick="{!c.handleSubmit}"/>
+			</lightning:layoutItem>
+		</lightning:layout>
+	</div>
+</aura:component>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <description>Used to display Set Field Reports logo and URL on the lightning Home page so that it can work for all users.</description>
+</AuraDefinitionBundle>

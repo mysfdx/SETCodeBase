@@ -1,0 +1,88 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" controller="backhaulFormController" access="global" >
+    <aura:attribute name="selectedRecordId" type="String"/>
+    <aura:attribute name="VinNumber" type="String"/>
+    <aura:attribute name="estimatedCostText" type="String" default="(Select a Dealer)"/>
+    <aura:attribute name="costAPIErrorText" type="String"/>
+    <aura:attribute name="backhaulConfirmMsg" type="String"/>
+    <aura:attribute name="selectedRecordName" type="String"/>
+    <aura:attribute name="disableSubmitButton" type="boolean"/>
+    <aura:attribute name="fromAccount" type="object"/>
+    <aura:attribute name="cost" type="String" />
+    <aura:attribute name="case" type="Case" />
+    <aura:attribute name="user" type="User" />
+    <aura:attribute name="contact" type="Contact" />
+    <aura:attribute name="account" type="Account" />
+    <aura:handler name="backhaulDealerSelectEvent" event="c:backhaulDealerSelectEvent"
+                  action="{!c.handleBackhaulEvent}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <div class="slds-page-header slds-align_absolute-center" style="width:70%;border: 1px solid #d8dde6;">
+        <div style="width: 70%">
+            <lightning:layout class="slds-p-top_medium slds-text-align_center slds-border_bottom" horizontalAlign="center" pullToBoundary="small" multipleRows="true">
+                <lightning:layoutItem class="slds-text-heading_medium slds-size_1-of-1">
+                    Backhaul Request
+                </lightning:layoutItem>
+                <aura:if isTrue="{!not(empty(v.VinNumber))}">
+                    <lightning:layoutItem class="slds-text-heading_small slds-size_1-of-1">
+                        VIN: {!v.VinNumber}
+                    </lightning:layoutItem>
+                </aura:if> 
+            </lightning:layout>
+            
+            
+            <lightning:layout class="slds-size_1-of-1" horizontalAlign="center">
+                <lightning:layoutItem padding="around-small" size="6">
+                    <p> <b><span style="color:Crimson">From:</span></b> &nbsp; {!v.fromAccount.Dealer_Code__c}</p> 
+                    <c:LookupSearchComponent objectName="Account" fieldName="Name, Dealer_Code__c" Label="" 
+                                             selectRecordId="{!v.selectedRecordId}" selectedRecord="{!v.fromAccount}" selectRecordName="{!v.selectedRecordName}" 
+                                             required="false" iconName="standard:account"/>
+                    
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <p> <b><span style="color:Crimson">To:</span></b> &nbsp;{!v.contact.Primary_Dealer_Code__c}</p>
+                    <br />
+                   <!-- {!v.account.Name}-->
+                    {!v.contact.Primary_Dealer_Name__c}
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layout class="slds-size_1-of-1" horizontalAlign="center">
+                <lightning:layoutItem padding="horizontal-small" size="6">
+                    <lightning:input type="text" aura:Id="inputField" value="{!v.case.From_Dealer_Contact__c}" required="true" 
+                                     maxlength="30"  messageWhenTooLong="A maximum of 30 characters are allowed in contact." placeholder="From Contact..."/>
+                    
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="horizontal-small" size="6">
+                    <lightning:input type="text" aura:Id="inputField" value="{!v.case.To_Dealer_Contact__c}" 
+                                     required="true" maxlength="30" messageWhenTooLong="A maximum of 30 characters are allowed in contact." placeholder="To Contact..."/>
+                </lightning:layoutItem>
+                
+            </lightning:layout>
+            
+            
+            <lightning:layout horizontalAlign="center" pullToBoundary="small">
+                <lightning:layoutItem class="slds-p-top_large slds-text-align_center" size="10" flexibility="auto">
+                    <p>Estimated Cost: {!v.estimatedCostText}
+                        <aura:if isTrue="{!empty(v.costAPIErrorText)}">
+                            <b><span style="color:Crimson">
+                            <lightning:formattedNumber value="{!v.cost}" style="currency" currencyCode="USD" currencyDisplayAs="symbol"/></span></b>
+                            <aura:set attribute="else">
+                               {!v.costAPIErrorText}
+                            </aura:set>
+                        </aura:if>
+                        </p>
+                    <lightning:textarea name="input7" value="{!v.case.DS_Comment__c}" 
+                                        placeholder="Comments...." maxlength="45" 
+                                        messageWhenTooLong="A maximum of 45 characters are allowed in comments." />
+                    <b><span style="color:Crimson">Estimated delivery of 10 days for backhaul request</span></b>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layout class="slds-no-print" horizontalAlign="center" pullToBoundary="small">
+                <lightning:layoutItem class="slds-p-top_large slds-text-align_right" size="12" flexibility="auto">
+                    <lightning:button label="Clear Form" onclick="{!c.handleClear}" />
+                    <lightning:button label="Submit" aura:id="submitBtn" onclick="{!c.handleSubmit}" disabled="{!v.disableSubmitButton}" class="slds-button slds-button_destructive"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+        </div>
+    </div>
+</aura:component>
